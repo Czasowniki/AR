@@ -36,6 +36,7 @@
         
         .ui-element:hover { transform: scale(1.1); }
 
+        /* Rozmiary i pozycje przycisków */
         .reset-button { top: 32px; left: 40px; width: 32px; height: 32px; }
         .action-button { top: 32px; right: 40px; width: 32px; height: 32px; }
         .theme-button { bottom: 40px; left: 40px; width: 32px; height: 32px; }
@@ -46,31 +47,27 @@
             background-color: #ffffff; mix-blend-mode: difference;
             transition: width 0.3s; z-index: 20; 
         }
-        [slot="poster"] { display: none; }
     </style>
 </head>
 <body>
 
     <div id="progress-bar"></div>
 
-    <!-- LEWA IKONA: Celownik (2 strzałki do środka po przekątnej) -->
+    <!-- LEWA IKONA: Prosty Celownik (Plus) -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
-            <!-- Górna prawa strzałka skierowana do środka -->
-            <path d="M14 7h3v3h2V4h-5v2z"/>
-            <!-- Dolna lewa strzałka skierowana do środka -->
-            <path d="M10 17H7v-3H5v6h5v-2z"/>
+            <!-- Pionowa kreska -->
+            <path d="M11 5h2v14h-2z"/>
+            <!-- Pozioma kreska -->
+            <path d="M5 11h14v2H5z"/>
         </svg>
     </button>
 
-    <!-- PRAWA IKONA: Fullscreen (2 strzałki na zewnątrz po przekątnej) -->
+    <!-- PRAWA IKONA: Fullscreen -->
     <button class="ui-element action-button" id="main-action">
         <span id="ar-text" style="font-weight: 600; font-size: 18px; letter-spacing: 5px;">AR</span>
         <svg id="fullscreen-icon" viewBox="0 0 24 24" style="display: none;">
-            <!-- Górna prawa strzałka na zewnątrz -->
-            <path d="M14 4h6v6h-2V7h-3V4z"/>
-            <!-- Dolna lewa strzałka na zewnątrz -->
-            <path d="M4 14h2v3h3v2H4v-6z"/>
+            <path d="M14 4h6v6h-2V7h-3V4zM4 14h2v3h3v2H4v-6z"/>
         </svg>
     </button>
 
@@ -88,6 +85,7 @@
         shadow-intensity="1.5" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
+        /* Zegar powiększony o 5% */
         camera-orbit="0deg 82deg 242%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
