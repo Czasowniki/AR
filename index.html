@@ -24,36 +24,88 @@
             --poster-color: #ffffff;
         }
 
+        /* Przycisk AR - Prawy górny róg, skrócony do AR */
         .ar-button {
-            background: none;
-            border: none;
             position: absolute;
             top: 40px;
             right: 40px;
-            padding: 10px;
-            font-size: 18px; 
-            font-weight: 800; 
+            background: none;
+            border: none;
+            padding: 0;
             color: #404040; 
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 3px; 
+            letter-spacing: 5px; /* Nieco większy rozstaw dla tak krótkiego napisu wygląda świetnie */
+            font-weight: 800;
+            font-size: 20px; /* Delikatnie większy, skoro jest tylko AR */
             z-index: 10;
         }
 
-        [slot="poster"] {
-            display: none;
+        /* Przycisk Reset (Ikona) - Lewy górny róg */
+        .reset-button {
+            position: absolute;
+            top: 36px; 
+            left: 40px;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: #404040;
+            opacity: 0.4;
+            transition: opacity 0.3s, transform 0.2s;
+            width: 30px;
+            height: 30px;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
+
+        .reset-button:hover {
+            opacity: 0.9;
+            transform: scale(1.1);
+        }
+
+        .reset-button svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        /* Pasek ładowania */
+        #progress-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 2px;
+            background-color: #404040;
+            transition: width 0.3s;
+            z-index: 20;
+        }
+
+        [slot="poster"] { display: none; }
     </style>
 </head>
 <body>
 
+    <div id="progress-bar"></div>
+
+    <button class="reset-button" id="reset-view" title="Resetuj widok">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v3H8v2h3v3h2v-3h3v-2h-3V7z"/>
+        </svg>
+    </button>
+
+    <button class="ar-button" onclick="activateAR()">AR</button>
+
     <model-viewer 
+        id="clock-model"
         src="ZEGAR.glb" 
         ar 
         ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
         disable-pan
-        
         shadow-intensity="1.5" 
         shadow-softness="1"
         exposure="1.6" 
@@ -61,35 +113,41 @@
         autoplay 
         auto-rotate
         
-        /* SKALA POCZĄTKOWA */
         camera-orbit="0deg 75deg 160%" 
-
-        /* POPRAWIONA HAPTYKA */
-        /* Zwiększona czułość - teraz jeden ruch palcem obróci go o wiele bardziej */
         orbit-sensitivity="1.8" 
-        
-        /* Zmniejszone tłumienie - model jest lżejszy w ruszaniu */
-        interpolation-decay="100" 
-        
+        interpolation-decay="150" 
         auto-rotate-delay="2000"
         
-        /* ZAKRESY ZOOMU */
         min-camera-orbit="auto auto 5%"
         max-camera-orbit="auto auto 500%"
-        
         touch-action="none">
         
         <div slot="poster"></div>
-
-        <button slot="ar-button" class="ar-button">
-            WEJDŹ W AR
-        </button>
-
     </model-viewer>
 
     <script>
-        const modelViewer = document.querySelector('model-viewer');
+        const modelViewer = document.querySelector('#clock-model');
+        const progressBar = document.querySelector('#progress-bar');
+        const resetBtn = document.querySelector('#reset-view');
+
+        resetBtn.addEventListener('click', () => {
+            modelViewer.cameraOrbit = "0deg 75deg 160%";
+            modelViewer.fieldOfView = "auto";
+        });
+
+        modelViewer.addEventListener('progress', (event) => {
+            const progress = event.detail.totalProgress * 100;
+            progressBar.style.width = `${progress}%`;
+            if (progress === 100) {
+                setTimeout(() => progressBar.style.opacity = '0', 500);
+            }
+        });
+
         modelViewer.addEventListener('contextmenu', (e) => e.preventDefault());
+
+        function activateAR() {
+            modelViewer.activateAR();
+        }
     </script>
 
 </body>
