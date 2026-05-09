@@ -43,9 +43,9 @@
         
         .ui-element:hover { transform: scale(1.1); }
 
-        .reset-button { top: 40px; left: 40px; width: 32px; height: 32px; }
+        /* Przycisk reset podniesiony o dodatkowe 2% (z 40px na 32px) */
+        .reset-button { top: 32px; left: 40px; width: 32px; height: 32px; }
         
-        /* Font AR ustawiony na wagę 600 */
         .ar-button { 
             top: 40px; right: 40px; 
             text-transform: uppercase; letter-spacing: 5px; 
@@ -64,10 +64,10 @@
 
     <div id="progress-bar"></div>
 
-    <!-- Reset Widoku - Krzyżyk podniesiony o 3% w górę -->
+    <!-- Poprawiony i wycentrowany krzyżyk w kole -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-8.3H8v2h3v3h2v-3h3v-2h-3V8.7h-2v3z"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm5-9h-4V7h-2v4H7v2h4v4h2v-4h4v-2z"/>
         </svg>
     </button>
 
@@ -88,8 +88,8 @@
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
         
-        /* Nowa, wyśrodkowana skala startowa */
-        camera-orbit="0deg 75deg 280%" 
+        /* Skala powiększona o 15% (280% -> 238%) */
+        camera-orbit="0deg 75deg 238%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
         auto-rotate-delay="2000"
@@ -107,7 +107,8 @@
         const body = document.body;
 
         document.querySelector('#reset-view').addEventListener('click', () => {
-            modelViewer.cameraOrbit = "0deg 75deg 280%";
+            // Tu również zaktualizowana skala dla przycisku reset
+            modelViewer.cameraOrbit = "0deg 75deg 238%";
             modelViewer.fieldOfView = "auto";
         });
 
