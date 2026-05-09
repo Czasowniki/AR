@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monografia Naukowa - Wizualizacja 3D</title>
+    <title>Czasownik CCRT</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         body { 
             margin: 0; 
             background-color: #ffffff; 
             display: flex; 
+            flex-direction: column;
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
             font-family: "Times New Roman", Times, serif; 
         }
+
+        /* Opcjonalny widoczny tytuł na stronie */
+        h1 {
+            font-weight: normal;
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
         model-viewer { 
             width: 85%; 
             height: 80vh; 
@@ -22,17 +33,16 @@
             --poster-color: transparent;
         }
 
-        /* Stylizacja napisu AR - bez ramki, w prawym górnym rogu */
         .ar-button {
             background: none;
             border: none;
             position: absolute;
-            top: 10px;    /* Maksymalnie w górę */
-            right: 10px;  /* Maksymalnie w prawo */
+            top: 15px;
+            right: 15px;
             padding: 5px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
-            color: #7f8c8d; /* Subtelny szary, żeby nie odciągać uwagi */
+            color: #bdc3c7; /* Jeszcze lżejszy kolor dla pełnego minimalizmu */
             cursor: pointer;
             text-transform: uppercase;
             letter-spacing: 2px;
@@ -40,11 +50,14 @@
         }
 
         .ar-button:hover {
-            color: #2c3e50; /* Delikatne przyciemnienie przy najechaniu */
+            color: #2c3e50;
         }
     </style>
 </head>
 <body>
+
+    <!-- Tytuł widoczny nad zegarem -->
+    <h1>Czasowniki</h1>
 
     <model-viewer 
         src="ZEGAR.glb" 
@@ -61,7 +74,6 @@
         min-camera-orbit="auto auto 100%"
         touch-action="pan-y">
         
-        <!-- Krótki, profesjonalny napis bez ramki -->
         <button slot="ar-button" class="ar-button">
             Aktywuj tryb AR
         </button>
