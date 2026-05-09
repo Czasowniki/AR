@@ -29,7 +29,6 @@
             transition: transform 0.2s, opacity 0.3s;
         }
 
-        /* CCRT - Złoty środek */
         .brand-name { 
             top: 32px; left: 40px; 
             font-weight: 700; 
@@ -38,10 +37,9 @@
             display: flex; align-items: center;
         }
 
-        /* Panel Informacyjny - Więcej oddechu */
         #info-panel {
             position: absolute;
-            top: 85px; left: 40px; /* Obniżone, by nie kleiło się do CCRT */
+            top: 85px; left: 40px; 
             color: #f0f0f0;
             mix-blend-mode: difference;
             opacity: 0;
@@ -53,14 +51,14 @@
         #info-panel.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
         
         .info-label { 
-            font-weight: 200; 
+            font-weight: 100; /* Maksymalne wyszczuplenie */
             text-transform: uppercase; 
             font-size: 9px; 
-            letter-spacing: 2px; 
+            letter-spacing: 2.5px; 
             display: block; 
-            margin-top: 15px; /* Odstęp między sekcjami */
-            margin-bottom: 2px; /* Odstęp od wartości pod spodem */
-            opacity: 0.45; 
+            margin-top: 18px; 
+            margin-bottom: 2px; 
+            opacity: 0.3; /* Bardzo subtelne */
         }
         .info-value { 
             font-weight: 500; 
@@ -69,11 +67,10 @@
             line-height: 1.2;
         }
 
-        /* Responsywność dla PC */
         @media (min-width: 769px) {
             .brand-name { font-weight: 600; font-size: 22px; }
             .info-value { font-weight: 400; font-size: 15px; }
-            .info-label { font-weight: 300; opacity: 0.4; }
+            .info-label { font-weight: 100; opacity: 0.25; }
         }
 
         .action-button { top: 32px; right: 40px; min-width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; }
@@ -138,10 +135,12 @@
         function applyResponsiveSettings() {
             const isMobile = window.innerWidth < 768;
             if (isMobile) {
-                modelViewer.cameraOrbit = "0deg 55deg 185%";
+                // Skala zmniejszona o 5% (z 185 na 195)
+                modelViewer.cameraOrbit = "0deg 55deg 195%";
                 modelViewer.cameraTarget = "0m 0.06m 0m";
             } else {
-                modelViewer.cameraOrbit = "0deg 55deg 220%";
+                // Skala zmniejszona o 5% (z 220 na 231)
+                modelViewer.cameraOrbit = "0deg 55deg 231%";
                 modelViewer.cameraTarget = "0m 0.04m 0m";
             }
         }
