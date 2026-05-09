@@ -38,7 +38,7 @@
         .ui-element:hover { transform: scale(1.1); }
 
         .reset-button { top: 32px; left: 40px; width: 34px; height: 34px; }
-        .action-button { top: 32px; right: 40px; width: 32px; height: 32px; }
+        .action-button { top: 32px; right: 40px; min-width: 44px; height: 32px; }
         .theme-button { bottom: 40px; left: 40px; width: 32px; height: 32px; }
 
         .ui-element svg { width: 100%; height: 100%; display: block; }
@@ -62,8 +62,9 @@
         </svg>
     </button>
 
+    <!-- NAPIS AR: Powiększony i pogrubiony -->
     <button class="ui-element action-button" id="main-action">
-        <span id="ar-text" style="font-weight: 600; font-size: 18px; letter-spacing: 5px;">AR</span>
+        <span id="ar-text" style="font-weight: 800; font-size: 22px; letter-spacing: 3px;">AR</span>
         <svg id="fullscreen-icon" viewBox="0 0 24 24" style="display: none;">
             <path d="M14 4h6v6h-2V7h-3V4zM4 14h2v3h3v2H4v-6z"/>
         </svg>
@@ -83,8 +84,9 @@
         shadow-intensity="1.5" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
-        /* Zegar większy (230%) i wyżej (85deg) */
-        camera-orbit="0deg 85deg 230%" 
+        /* KĄT 3/4 (55deg), SKALA (210%) I PODNIESIENIE TARGETU (0.05m) */
+        camera-orbit="0deg 55deg 210%" 
+        camera-target="0m 0.05m 0m"
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
         auto-rotate-delay="2000"
@@ -102,7 +104,10 @@
         const body = document.body;
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (!isMobile) { arText.style.display = 'none'; fsIcon.style.display = 'block'; }
+        if (!isMobile) { 
+            arText.style.display = 'none'; 
+            fsIcon.style.display = 'block'; 
+        }
 
         actionButton.addEventListener('click', () => {
             if (isMobile) { modelViewer.activateAR(); } 
@@ -113,8 +118,8 @@
         });
 
         document.querySelector('#reset-view').addEventListener('click', () => {
-            /* Reset do nowych ustawień skali i pozycji */
-            modelViewer.cameraOrbit = "0deg 85deg 230%";
+            modelViewer.cameraOrbit = "0deg 55deg 210%";
+            modelViewer.cameraTarget = "0m 0.05m 0m";
             modelViewer.fieldOfView = "auto";
         });
 
