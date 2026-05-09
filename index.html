@@ -25,26 +25,29 @@
 
         .ui-element {
             position: absolute;
-            fill: #ffffff !important;
-            color: #ffffff !important;
+            /* Rozjaśnione ikony dla lepszego kontrastu na mobile */
+            fill: #f0f0f0 !important;
+            color: #f0f0f0 !important;
             mix-blend-mode: difference;
+            filter: brightness(1.3); /* Dodatkowe wzmocnienie jasności */
+            
             background: none; border: none; padding: 0;
             cursor: pointer; z-index: 100; 
-            transition: transform 0.2s;
+            transition: transform 0.2s, opacity 0.3s;
             display: flex; align-items: center; justify-content: center;
         }
         
         .ui-element:hover { transform: scale(1.1); }
 
-        /* Rozmiary i pozycje przycisków */
         .reset-button { top: 32px; left: 40px; width: 32px; height: 32px; }
         .action-button { top: 32px; right: 40px; width: 32px; height: 32px; }
         .theme-button { bottom: 40px; left: 40px; width: 32px; height: 32px; }
 
         .ui-element svg { width: 100%; height: 100%; display: block; }
+        
         #progress-bar { 
             position: absolute; top: 0; left: 0; width: 0%; height: 2px; 
-            background-color: #ffffff; mix-blend-mode: difference;
+            background-color: #f0f0f0; mix-blend-mode: difference;
             transition: width 0.3s; z-index: 20; 
         }
     </style>
@@ -53,17 +56,21 @@
 
     <div id="progress-bar"></div>
 
-    <!-- LEWA IKONA: Prosty Celownik (Plus) -->
+    <!-- NOWY CELOWNIK: Pusty w środku, 4 precyzyjne narożniki -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
-            <!-- Pionowa kreska -->
-            <path d="M11 5h2v14h-2z"/>
-            <!-- Pozioma kreska -->
-            <path d="M5 11h14v2H5z"/>
+            <!-- Górny lewy -->
+            <path d="M7 7h3v2H9v1H7V7z"/>
+            <!-- Górny prawy -->
+            <path d="M14 7h3v3h-2V9h-1V7z"/>
+            <!-- Dolny lewy -->
+            <path d="M7 14h2v1h1v2H7v-3z"/>
+            <!-- Dolny prawy -->
+            <path d="M15 14h2v3h-3v-2h1v-1z"/>
         </svg>
     </button>
 
-    <!-- PRAWA IKONA: Fullscreen -->
+    <!-- PRZYCISK AKCJI (AR/FS) -->
     <button class="ui-element action-button" id="main-action">
         <span id="ar-text" style="font-weight: 600; font-size: 18px; letter-spacing: 5px;">AR</span>
         <svg id="fullscreen-icon" viewBox="0 0 24 24" style="display: none;">
@@ -71,6 +78,7 @@
         </svg>
     </button>
 
+    <!-- ZMIANA MOTYWU -->
     <button class="ui-element theme-button" id="theme-toggle" title="Zmień tryb tła">
         <svg viewBox="0 0 24 24">
             <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"/>
@@ -85,7 +93,6 @@
         shadow-intensity="1.5" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
-        /* Zegar powiększony o 5% */
         camera-orbit="0deg 82deg 242%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
@@ -104,13 +111,20 @@
         const body = document.body;
 
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (!isMobile) { arText.style.display = 'none'; fsIcon.style.display = 'block'; }
+        if (!isMobile) { 
+            arText.style.display = 'none'; 
+            fsIcon.style.display = 'block'; 
+        }
 
         actionButton.addEventListener('click', () => {
-            if (isMobile) { modelViewer.activateAR(); } 
-            else {
-                if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } 
-                else { document.exitFullscreen(); }
+            if (isMobile) { 
+                modelViewer.activateAR(); 
+            } else {
+                if (!document.fullscreenElement) { 
+                    document.documentElement.requestFullscreen(); 
+                } else { 
+                    document.exitFullscreen(); 
+                }
             }
         });
 
