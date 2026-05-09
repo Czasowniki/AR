@@ -52,11 +52,8 @@
         ar 
         ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
-        
-        /* USUNIĘCIE PANORAMOWANIA - zapobiega ucieczkom modelu */
         disable-pan
         
-        /* OŚWIETLENIE PREMIUM */
         shadow-intensity="1.5" 
         shadow-softness="1"
         exposure="1.6" 
@@ -64,15 +61,15 @@
         autoplay 
         auto-rotate
         
-        /* DYNAMIKA RUCHU - Standard AR */
-        /* 1. Bezwładność: 500 to "złoty środek" dla fizycznego poczucia masy */
-        interpolation-decay="500" 
+        /* KLUCZ DO MNIEJSZEGO OBIEKTU NA STARCIE */
+        /* Zwiększenie trzeciej wartości (160%) oddala kamerę początkową */
+        camera-orbit="0deg 75deg 160%" 
         
-        /* 2. Orbitowanie: auto-rotate-delay sprawia, że po interakcji zegar sam 
-           bardzo powoli wraca do autostartu, co wygląda bardzo profesjonalnie */
-        auto-rotate-delay="3000"
+        /* DYNAMIKA RUCHU - LEKKIE PREMIUM */
+        interpolation-decay="150" 
+        auto-rotate-delay="2000"
         
-        /* ZOOM I SCROLL */
+        /* ZAKRESY ZOOMU */
         min-camera-orbit="auto auto 5%"
         max-camera-orbit="auto auto 500%"
         
@@ -87,12 +84,8 @@
     </model-viewer>
 
     <script>
-        // Blokada prawego przycisku myszy dla czystej interakcji
         const modelViewer = document.querySelector('model-viewer');
         modelViewer.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        // Opcjonalne: Możesz tu dodać logikę, która po "pchnięciu" palcem 
-        // utrzyma rotację nieco dłużej, jeśli uznasz, że 500 to wciąż za mało.
     </script>
 
 </body>
