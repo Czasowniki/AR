@@ -13,7 +13,7 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
-            overflow: hidden; /* Blokuje przewijanie strony "pod" zegarem */
+            overflow: hidden; 
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
         }
 
@@ -21,10 +21,9 @@
             width: 100%; 
             height: 100vh; 
             background-color: #ffffff;
-            --poster-color: #ffffff; /* Biały ekran podczas ładowania */
+            --poster-color: #ffffff;
         }
 
-        /* Nowoczesny przycisk AR - Bold, 75% szarości, minimalistyczny */
         .ar-button {
             background: none;
             border: none;
@@ -32,16 +31,15 @@
             top: 40px;
             right: 40px;
             padding: 10px;
-            font-size: 18px; /* Nieco mniejszy, by był bardziej elegancki */
-            font-weight: 800; /* Mocny bold */
-            color: #404040; /* Około 75% czerni/szarości */
+            font-size: 18px; 
+            font-weight: 800; 
+            color: #404040; 
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 3px; /* Większe odstępy między literami - styl monografii */
+            letter-spacing: 3px; 
             z-index: 10;
         }
 
-        /* Ukrywamy domyślny poster, zostawiając czystą biel */
         [slot="poster"] {
             display: none;
         }
@@ -61,15 +59,22 @@
         autoplay 
         auto-rotate
         
-        /* Kluczowe dla sterowania na telefonie */
-        touch-action="none" 
+        /* FIX: CENTROWANIE OBROTU */
+        camera-target="0m 0m 0m"
+        align-model="center"
+
+        /* FIX: SCROLL NA KOMPUTERZE I ZOOM */
+        disable-zoom="false"
+        min-field-of-view="10deg"
+        max-field-of-view="auto"
+        min-camera-orbit="auto auto 5%"
+        max-camera-orbit="auto auto 500%"
+
+        /* FIX: REAKCJA NA DOTYK (Zredukowane opóźnienie) */
+        interpolation-decay="50"
         
-        /* Zakresy zoomu */
-        min-camera-orbit="auto auto 50%"
-        max-camera-orbit="auto auto 300%"
-        interpolation-decay="200">
+        touch-action="none">
         
-        <!-- Pusty slot postera zapewnia biały ekran na starcie -->
         <div slot="poster"></div>
 
         <button slot="ar-button" class="ar-button">
