@@ -6,82 +6,65 @@
     <title>Czasownik CCRT</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
+        :root {
+            --ui-color: #404040;
+            --bg-color: #ffffff;
+        }
+
         body { 
             margin: 0; 
-            background-color: #ffffff; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            overflow: hidden; 
+            background-color: var(--bg-color); 
+            transition: background-color 0.5s ease;
+            display: flex; justify-content: center; align-items: center; 
+            height: 100vh; overflow: hidden; 
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
         }
 
+        /* Tryb Ciemny - Grafit zamiast czerni, by czarny zegar był widoczny */
+        body.dark-mode { 
+            --bg-color: #1a1a1a; 
+            --ui-color: #ffffff;
+        }
+
         model-viewer { 
-            width: 100%; 
-            height: 100vh; 
-            background-color: #ffffff;
-            --poster-color: #ffffff;
+            width: 100%; height: 100vh; 
+            background-color: transparent; 
         }
 
-        /* Przycisk AR - Prawy górny róg, skrócony do AR */
-        .ar-button {
+        /* UI Wspólne */
+        .ui-element {
             position: absolute;
-            top: 40px;
-            right: 40px;
-            background: none;
-            border: none;
-            padding: 0;
-            color: #404040; 
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 5px; /* Nieco większy rozstaw dla tak krótkiego napisu wygląda świetnie */
-            font-weight: 800;
-            font-size: 20px; /* Delikatnie większy, skoro jest tylko AR */
-            z-index: 10;
+            color: var(--ui-color);
+            background: none; border: none; padding: 0;
+            cursor: pointer; z-index: 10;
+            transition: color 0.5s ease, opacity 0.3s, transform 0.2s;
         }
+        .ui-element:hover { transform: scale(1.1); }
 
-        /* Przycisk Reset (Ikona) - Lewy górny róg */
+        /* GÓRA LEWO: Celownik (Reset) */
         .reset-button {
-            position: absolute;
-            top: 36px; 
-            left: 40px;
-            background: none;
-            border: none;
-            padding: 0;
-            cursor: pointer;
-            color: #404040;
-            opacity: 0.4;
-            transition: opacity 0.3s, transform 0.2s;
-            width: 30px;
-            height: 30px;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            top: 36px; left: 40px;
+            width: 32px; height: 32px;
         }
 
-        .reset-button:hover {
-            opacity: 0.9;
-            transform: scale(1.1);
+        /* GÓRA PRAWO: AR */
+        .ar-button {
+            top: 40px; right: 40px;
+            text-transform: uppercase; letter-spacing: 5px; 
+            font-weight: 800; font-size: 20px;
         }
 
-        .reset-button svg {
-            width: 100%;
-            height: 100%;
-            fill: currentColor;
+        /* DÓŁ LEWO: Ikona Trybu (Kółko pół na pół) */
+        .theme-button {
+            bottom: 40px; left: 40px;
+            width: 30px; height: 30px;
         }
 
-        /* Pasek ładowania */
-        #progress-bar {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 2px;
-            background-color: #404040;
-            transition: width 0.3s;
-            z-index: 20;
+        .ui-element svg { width: 100%; height: 100%; fill: currentColor; }
+
+        #progress-bar { 
+            position: absolute; top: 0; left: 0; width: 0%; height: 2px; 
+            background-color: var(--ui-color); transition: width 0.3s; z-index: 20; 
         }
 
         [slot="poster"] { display: none; }
@@ -91,64 +74,70 @@
 
     <div id="progress-bar"></div>
 
-    <button class="reset-button" id="reset-view" title="Resetuj widok">
+    <!-- Reset Widoku -->
+    <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
             <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v3H8v2h3v3h2v-3h3v-2h-3V7z"/>
         </svg>
     </button>
 
-    <button class="ar-button" onclick="activateAR()">AR</button>
+    <!-- Tryb AR -->
+    <button class="ui-element ar-button" onclick="activateAR()">AR</button>
+
+    <!-- Przełącznik Tła -->
+    <button class="ui-element theme-button" id="theme-toggle" title="Zmień tryb tła">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"/>
+        </svg>
+    </button>
 
     <model-viewer 
         id="clock-model"
         src="ZEGAR.glb" 
-        ar 
-        ar-modes="webxr scene-viewer quick-look" 
-        camera-controls 
-        disable-pan
-        shadow-intensity="1.5" 
-        shadow-softness="1"
-        exposure="1.6" 
-        environment-intensity="1.8"
-        autoplay 
-        auto-rotate
-        
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-controls disable-pan
+        shadow-intensity="1.5" shadow-softness="1"
+        exposure="1.6" environment-intensity="1.8"
+        autoplay auto-rotate
         camera-orbit="0deg 75deg 160%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
         auto-rotate-delay="2000"
-        
-        min-camera-orbit="auto auto 5%"
-        max-camera-orbit="auto auto 500%"
         touch-action="none">
-        
         <div slot="poster"></div>
     </model-viewer>
 
     <script>
         const modelViewer = document.querySelector('#clock-model');
         const progressBar = document.querySelector('#progress-bar');
-        const resetBtn = document.querySelector('#reset-view');
+        const body = document.body;
 
-        resetBtn.addEventListener('click', () => {
+        // Reset widoku
+        document.querySelector('#reset-view').addEventListener('click', () => {
             modelViewer.cameraOrbit = "0deg 75deg 160%";
             modelViewer.fieldOfView = "auto";
+        });
+
+        // Przełącznik tła (Studyjny)
+        document.querySelector('#theme-toggle').addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            // Subtelna korekta ekspozycji dla czarnego modelu na ciemnym tle
+            if(body.classList.contains('dark-mode')) {
+                modelViewer.exposure = "2.2"; // Jaśniej w ciemności
+            } else {
+                modelViewer.exposure = "1.6"; // Standard w jasnym
+            }
         });
 
         modelViewer.addEventListener('progress', (event) => {
             const progress = event.detail.totalProgress * 100;
             progressBar.style.width = `${progress}%`;
-            if (progress === 100) {
-                setTimeout(() => progressBar.style.opacity = '0', 500);
-            }
+            if (progress === 100) setTimeout(() => progressBar.style.opacity = '0', 500);
         });
 
         modelViewer.addEventListener('contextmenu', (e) => e.preventDefault());
-
-        function activateAR() {
-            modelViewer.activateAR();
-        }
+        function activateAR() { modelViewer.activateAR(); }
     </script>
-
 </body>
 </html>
