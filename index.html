@@ -44,7 +44,15 @@
         .ui-element:hover { transform: scale(1.1); }
 
         .reset-button { top: 40px; left: 40px; width: 32px; height: 32px; }
-        .ar-button { top: 40px; right: 40px; text-transform: uppercase; letter-spacing: 5px; font-weight: 400; font-size: 20px; line-height: 1; }
+        
+        /* Font AR ustawiony na wagę 600 */
+        .ar-button { 
+            top: 40px; right: 40px; 
+            text-transform: uppercase; letter-spacing: 5px; 
+            font-weight: 600; font-size: 20px; 
+            line-height: 1; 
+        }
+
         .theme-button { bottom: 40px; left: 40px; width: 32px; height: 32px; }
 
         .ui-element svg { width: 100%; height: 100%; display: block; }
@@ -56,9 +64,10 @@
 
     <div id="progress-bar"></div>
 
+    <!-- Reset Widoku - Krzyżyk podniesiony o 3% w górę -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-8H8v2h3v3h2v-3h3v-2h-3V9h-2v3z"/>
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-8.3H8v2h3v3h2v-3h3v-2h-3V8.7h-2v3z"/>
         </svg>
     </button>
 
@@ -79,13 +88,12 @@
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
         
-        /* Zmieniony dystans początkowy (400% zamiast 160%) */
-        camera-orbit="0deg 75deg 400%" 
+        /* Nowa, wyśrodkowana skala startowa */
+        camera-orbit="0deg 75deg 280%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
         auto-rotate-delay="2000"
         
-        /* Ustawienia limitów: minimalne zbliżenie i ogromne oddalenie (1000%) */
         min-camera-orbit="auto auto 5%"
         max-camera-orbit="auto auto 1000%"
         
@@ -99,8 +107,7 @@
         const body = document.body;
 
         document.querySelector('#reset-view').addEventListener('click', () => {
-            /* Reset również do nowej, mniejszej skali */
-            modelViewer.cameraOrbit = "0deg 75deg 400%";
+            modelViewer.cameraOrbit = "0deg 75deg 280%";
             modelViewer.fieldOfView = "auto";
         });
 
