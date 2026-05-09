@@ -7,7 +7,8 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root {
-            --ui-color: #404040;
+            /* Ujednolicony kolor dla wszystkich elementów UI */
+            --ui-color: #555555;
             --bg-color: #ffffff;
         }
 
@@ -22,7 +23,7 @@
 
         body.dark-mode { 
             --bg-color: #121212; 
-            --ui-color: #ffffff;
+            --ui-color: #bbbbbb; /* Jaśniejszy w trybie ciemnym dla kontrastu */
         }
 
         model-viewer { 
@@ -43,7 +44,6 @@
         
         .ui-element:hover { transform: scale(1.1); }
 
-        /* Przycisk reset podniesiony o dodatkowe 2% (z 40px na 32px) */
         .reset-button { top: 32px; left: 40px; width: 32px; height: 32px; }
         
         .ar-button { 
@@ -64,7 +64,6 @@
 
     <div id="progress-bar"></div>
 
-    <!-- Poprawiony i wycentrowany krzyżyk w kole -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm5-9h-4V7h-2v4H7v2h4v4h2v-4h4v-2z"/>
@@ -87,16 +86,12 @@
         shadow-intensity="1.5" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
-        
-        /* Skala powiększona o 15% (280% -> 238%) */
-        camera-orbit="0deg 75deg 238%" 
+        camera-orbit="0deg 82deg 280%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
         auto-rotate-delay="2000"
-        
         min-camera-orbit="auto auto 5%"
         max-camera-orbit="auto auto 1000%"
-        
         touch-action="none">
         <div slot="poster"></div>
     </model-viewer>
@@ -107,8 +102,7 @@
         const body = document.body;
 
         document.querySelector('#reset-view').addEventListener('click', () => {
-            // Tu również zaktualizowana skala dla przycisku reset
-            modelViewer.cameraOrbit = "0deg 75deg 238%";
+            modelViewer.cameraOrbit = "0deg 82deg 280%";
             modelViewer.fieldOfView = "auto";
         });
 
