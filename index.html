@@ -7,8 +7,7 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root {
-            /* Ujednolicony kolor dla wszystkich elementów UI */
-            --ui-color: #555555;
+            --ui-color: #333333;
             --bg-color: #ffffff;
         }
 
@@ -23,7 +22,7 @@
 
         body.dark-mode { 
             --bg-color: #121212; 
-            --ui-color: #bbbbbb; /* Jaśniejszy w trybie ciemnym dla kontrastu */
+            --ui-color: #dddddd;
         }
 
         model-viewer { 
@@ -46,11 +45,11 @@
 
         .reset-button { top: 32px; left: 40px; width: 32px; height: 32px; }
         
-        .ar-button { 
-            top: 40px; right: 40px; 
+        /* Styl dla prawego górnego przycisku (AR lub Fullscreen) */
+        .action-button { 
+            top: 32px; right: 40px; width: 32px; height: 32px;
             text-transform: uppercase; letter-spacing: 5px; 
-            font-weight: 600; font-size: 20px; 
-            line-height: 1; 
+            font-weight: 600; font-size: 18px; 
         }
 
         .theme-button { bottom: 40px; left: 40px; width: 32px; height: 32px; }
@@ -64,13 +63,20 @@
 
     <div id="progress-bar"></div>
 
+    <!-- Celownik (Reset) -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm5-9h-4V7h-2v4H7v2h4v4h2v-4h4v-2z"/>
+            <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm8.94 3c-.46-4.17-3.77-7.48-7.94-7.94V1h-2v2.06C6.83 3.52 3.52 6.83 3.06 11H1v2h2.06c.46 4.17 3.77 7.48 7.94 7.94V23h2v-2.06c4.17-.46 7.48-3.77 7.94-7.94H23v-2h-2.06zM12 19c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
         </svg>
     </button>
 
-    <button class="ui-element ar-button" id="ar-trigger">AR</button>
+    <!-- Przycisk AR / Fullscreen -->
+    <button class="ui-element action-button" id="main-action">
+        <span id="ar-text">AR</span>
+        <svg id="fullscreen-icon" viewBox="0 0 24 24" style="display: none;">
+            <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+        </svg>
+    </button>
 
     <button class="ui-element theme-button" id="theme-toggle" title="Zmień tryb tła">
         <svg viewBox="0 0 24 24">
@@ -86,7 +92,7 @@
         shadow-intensity="1.5" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
-        camera-orbit="0deg 82deg 280%" 
+        camera-orbit="0deg 82deg 255%" 
         orbit-sensitivity="1.8" 
         interpolation-decay="150" 
         auto-rotate-delay="2000"
@@ -99,24 +105,38 @@
     <script>
         const modelViewer = document.querySelector('#clock-model');
         const progressBar = document.querySelector('#progress-bar');
+        const actionButton = document.querySelector('#main-action');
+        const arText = document.querySelector('#ar-text');
+        const fsIcon = document.querySelector('#fullscreen-icon');
         const body = document.body;
 
-        document.querySelector('#reset-view').addEventListener('click', () => {
-            modelViewer.cameraOrbit = "0deg 82deg 280%";
-            modelViewer.fieldOfView = "auto";
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (!isMobile) {
+            arText.style.display = 'none';
+            fsIcon.style.display = 'block';
+        }
+
+        actionButton.addEventListener('click', () => {
+            if (isMobile) {
+                modelViewer.activateAR();
+            } else {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
         });
 
-        document.querySelector('#ar-trigger').addEventListener('click', () => {
-            modelViewer.activateAR();
+        document.querySelector('#reset-view').addEventListener('click', () => {
+            modelViewer.cameraOrbit = "0deg 82deg 255%";
+            modelViewer.fieldOfView = "auto";
         });
 
         document.querySelector('#theme-toggle').addEventListener('click', () => {
             body.classList.toggle('dark-mode');
-            if(body.classList.contains('dark-mode')) {
-                modelViewer.exposure = "2.8";
-            } else {
-                modelViewer.exposure = "1.6"; 
-            }
+            modelViewer.exposure = body.classList.contains('dark-mode') ? "2.8" : "1.6";
         });
 
         modelViewer.addEventListener('progress', (event) => {
