@@ -10,70 +10,86 @@
             margin: 0; 
             background-color: #ffffff; 
             display: flex; 
-            flex-direction: column;
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
             font-family: "Times New Roman", Times, serif; 
         }
 
-        /* Opcjonalny widoczny tytuł na stronie */
-        h1 {
-            font-weight: normal;
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-        }
-
         model-viewer { 
-            width: 85%; 
-            height: 80vh; 
+            width: 95%; 
+            height: 95vh; 
             background-color: #ffffff;
-            --poster-color: transparent;
+            --poster-color: #ffffff;
         }
 
+        /* Przycisk AR - większy, 90% czerni, prawy górny róg */
         .ar-button {
             background: none;
             border: none;
             position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 5px;
-            font-size: 10px;
-            font-weight: bold;
-            color: #bdc3c7; /* Jeszcze lżejszy kolor dla pełnego minimalizmu */
+            top: 30px;
+            right: 30px;
+            padding: 10px;
+            font-size: 24px; /* Rozmiar zbliżony do dawnego h1 */
+            font-weight: normal;
+            color: #1a1a1a; /* 90% czerni */
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: color 0.3s;
+            letter-spacing: 1px;
+            z-index: 10;
         }
 
-        .ar-button:hover {
+        /* Ekran ładowania (Poster) */
+        #preloader {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
             color: #2c3e50;
+            text-align: center;
+        }
+
+        .preloader-title {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .preloader-info {
+            font-size: 14px;
+            color: #7f8c8d;
+            max-width: 300px;
         }
     </style>
 </head>
 <body>
-
-    <!-- Tytuł widoczny nad zegarem -->
-    <h1>Czasowniki</h1>
 
     <model-viewer 
         src="ZEGAR.glb" 
         ar 
         ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
+        interaction-prompt="auto"
         shadow-intensity="1.5" 
         shadow-softness="1"
         exposure="1.6" 
         environment-intensity="1.8"
         autoplay 
         auto-rotate
-        camera-orbit="0deg 75deg 120%" 
-        min-camera-orbit="auto auto 100%"
         touch-action="pan-y">
         
+        <!-- Ekran informacyjny przed załadowaniem -->
+        <div id="preloader" slot="poster">
+            <div class="preloader-title">Czasownik CCRT</div>
+            <div class="preloader-info">
+                Wizualizacja modelu 3D dla monografii.<br>
+                Proszę czekać, trwa wczytywanie...
+            </div>
+        </div>
+
         <button slot="ar-button" class="ar-button">
             Aktywuj tryb AR
         </button>
