@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Czasownik CCRT</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
@@ -13,55 +13,37 @@
             justify-content: center; 
             align-items: center; 
             height: 100vh; 
-            font-family: "Times New Roman", Times, serif; 
+            overflow: hidden; /* Blokuje przewijanie strony "pod" zegarem */
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
         }
 
         model-viewer { 
-            width: 95%; 
-            height: 95vh; 
+            width: 100%; 
+            height: 100vh; 
             background-color: #ffffff;
-            --poster-color: #ffffff;
+            --poster-color: #ffffff; /* Biały ekran podczas ładowania */
         }
 
-        /* Przycisk AR - większy, 90% czerni, prawy górny róg */
+        /* Nowoczesny przycisk AR - Bold, 75% szarości, minimalistyczny */
         .ar-button {
             background: none;
             border: none;
             position: absolute;
-            top: 30px;
-            right: 30px;
+            top: 40px;
+            right: 40px;
             padding: 10px;
-            font-size: 24px; /* Rozmiar zbliżony do dawnego h1 */
-            font-weight: normal;
-            color: #1a1a1a; /* 90% czerni */
+            font-size: 18px; /* Nieco mniejszy, by był bardziej elegancki */
+            font-weight: 800; /* Mocny bold */
+            color: #404040; /* Około 75% czerni/szarości */
             cursor: pointer;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 3px; /* Większe odstępy między literami - styl monografii */
             z-index: 10;
         }
 
-        /* Ekran ładowania (Poster) */
-        #preloader {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            background-color: #ffffff;
-            color: #2c3e50;
-            text-align: center;
-        }
-
-        .preloader-title {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-
-        .preloader-info {
-            font-size: 14px;
-            color: #7f8c8d;
-            max-width: 300px;
+        /* Ukrywamy domyślny poster, zostawiając czystą biel */
+        [slot="poster"] {
+            display: none;
         }
     </style>
 </head>
@@ -72,26 +54,26 @@
         ar 
         ar-modes="webxr scene-viewer quick-look" 
         camera-controls 
-        interaction-prompt="auto"
         shadow-intensity="1.5" 
         shadow-softness="1"
         exposure="1.6" 
         environment-intensity="1.8"
         autoplay 
         auto-rotate
-        touch-action="pan-y">
         
-        <!-- Ekran informacyjny przed załadowaniem -->
-        <div id="preloader" slot="poster">
-            <div class="preloader-title">Czasownik CCRT</div>
-            <div class="preloader-info">
-                Wizualizacja modelu 3D dla monografii.<br>
-                Proszę czekać, trwa wczytywanie...
-            </div>
-        </div>
+        /* Kluczowe dla sterowania na telefonie */
+        touch-action="none" 
+        
+        /* Zakresy zoomu */
+        min-camera-orbit="auto auto 50%"
+        max-camera-orbit="auto auto 300%"
+        interpolation-decay="200">
+        
+        <!-- Pusty slot postera zapewnia biały ekran na starcie -->
+        <div slot="poster"></div>
 
         <button slot="ar-button" class="ar-button">
-            Aktywuj tryb AR
+            WEJDŹ W AR
         </button>
 
     </model-viewer>
