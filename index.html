@@ -6,21 +6,15 @@
     <title>Czasownik CCRT</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root {
-            --bg-color: #ffffff;
-        }
-
+        :root { --bg-color: #ffffff; }
         body { 
-            margin: 0; 
-            background-color: var(--bg-color); 
+            margin: 0; background-color: var(--bg-color); 
             transition: background-color 0.5s ease;
             display: flex; justify-content: center; align-items: center; 
             height: 100vh; overflow: hidden; 
             font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; 
         }
-
         body.dark-mode { --bg-color: #121212; }
-
         model-viewer { width: 100%; height: 100vh; background-color: transparent; outline: none; }
 
         .ui-element {
@@ -34,13 +28,10 @@
             transition: transform 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
-        
         .ui-element:hover { transform: scale(1.1); }
-
         .reset-button { top: 32px; left: 40px; width: 34px; height: 34px; }
         .action-button { top: 32px; right: 40px; min-width: 44px; height: 32px; }
         .theme-button { bottom: 40px; left: 40px; width: 32px; height: 32px; }
-
         .ui-element svg { width: 100%; height: 100%; display: block; }
         
         #progress-bar { 
@@ -54,7 +45,6 @@
 
     <div id="progress-bar"></div>
 
-    <!-- LEWA IKONA: Koło w kółku -->
     <button class="ui-element reset-button" id="reset-view" title="Resetuj widok">
         <svg viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/>
@@ -62,7 +52,6 @@
         </svg>
     </button>
 
-    <!-- NAPIS AR: Powiększony i pogrubiony -->
     <button class="ui-element action-button" id="main-action">
         <span id="ar-text" style="font-weight: 800; font-size: 22px; letter-spacing: 3px;">AR</span>
         <svg id="fullscreen-icon" viewBox="0 0 24 24" style="display: none;">
@@ -84,14 +73,9 @@
         shadow-intensity="1.5" shadow-softness="1"
         exposure="1.6" environment-intensity="1.8"
         autoplay auto-rotate
-        /* KĄT 3/4 (55deg), SKALA (210%) I PODNIESIENIE TARGETU (0.05m) */
-        camera-orbit="0deg 55deg 210%" 
-        camera-target="0m 0.05m 0m"
-        orbit-sensitivity="1.8" 
-        interpolation-decay="150" 
-        auto-rotate-delay="2000"
-        min-camera-orbit="auto auto 5%"
-        max-camera-orbit="auto auto 1000%"
+        /* Wartości domyślne zostaną nadpisane przez JS poniżej */
+        camera-orbit="0deg 55deg 180%" 
+        camera-target="0m 0.06m 0m"
         touch-action="none">
     </model-viewer>
 
@@ -103,25 +87,39 @@
         const fsIcon = document.querySelector('#fullscreen-icon');
         const body = document.body;
 
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (!isMobile) { 
+        // Funkcja ustalająca idealną skalę dla urządzenia
+        function applyResponsiveSettings() {
+            const isMobile = window.innerWidth < 768;
+            if (isMobile) {
+                // TELEFON: Duże przybliżenie (160%), kąt 55 stopni, podniesiony wyżej
+                modelViewer.cameraOrbit = "0deg 55deg 160%";
+                modelViewer.cameraTarget = "0m 0.07m 0m";
+            } else {
+                // KOMPUTER: Przybliżenie (190%), ten sam kąt 55 stopni
+                modelViewer.cameraOrbit = "0deg 55deg 190%";
+                modelViewer.cameraTarget = "0m 0.05m 0m";
+            }
+        }
+
+        // Uruchom przy starcie i przy zmianie rozmiaru okna
+        window.addEventListener('load', applyResponsiveSettings);
+        window.addEventListener('resize', applyResponsiveSettings);
+
+        const isMobileDevice = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (!isMobileDevice) { 
             arText.style.display = 'none'; 
             fsIcon.style.display = 'block'; 
         }
 
         actionButton.addEventListener('click', () => {
-            if (isMobile) { modelViewer.activateAR(); } 
+            if (isMobileDevice) { modelViewer.activateAR(); } 
             else {
                 if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } 
                 else { document.exitFullscreen(); }
             }
         });
 
-        document.querySelector('#reset-view').addEventListener('click', () => {
-            modelViewer.cameraOrbit = "0deg 55deg 210%";
-            modelViewer.cameraTarget = "0m 0.05m 0m";
-            modelViewer.fieldOfView = "auto";
-        });
+        document.querySelector('#reset-view').addEventListener('click', applyResponsiveSettings);
 
         document.querySelector('#theme-toggle').addEventListener('click', () => {
             body.classList.toggle('dark-mode');
