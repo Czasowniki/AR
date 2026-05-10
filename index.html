@@ -17,37 +17,22 @@
         body.dark-mode { --bg-color: #121212; }
         model-viewer { width: 100%; height: 100vh; background-color: transparent; outline: none; }
 
-        /* BAZA DLA WSZYSTKICH ELEMENTÓW UI */
         .ui-element {
-            position: absolute;
             background: none; border: none; padding: 0;
             cursor: pointer; z-index: 100;
             mix-blend-mode: difference;
             color: #f0f0f0 !important;
             fill: #f0f0f0 !important;
-            transition: transform 0.2s cubic-bezier(0.2, 0, 0.2, 1);
-            will-change: transform; /* Naprawa rozmycia */
-            backface-visibility: hidden;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            will-change: transform;
+            -webkit-font-smoothing: antialiased;
+            transform: translateZ(0); /* Fix dla ostrości */
             -webkit-tap-highlight-color: transparent;
             outline: none;
-            text-decoration: none !important;
         }
 
-        /* SPECYFICZNE SKALOWANIE DLA TEKSTU U GÓRY (SUBTELNE) */
-        .brand-btn:hover { transform: scale(1.03); }
-        .brand-btn:active { transform: scale(1.02); }
-
-        /* SPECYFICZNE SKALOWANIE DLA IKON (MOCNIEJSZE) */
-        .icon-btn:hover { transform: scale(1.1); }
-        .icon-btn:active { transform: scale(1.05); }
-
-        /* ŚRODKOWE IKONY (NAPRAWA POZYCJI) */
-        .centered { transform: translateX(-50%) scale(1); }
-        .centered:hover { transform: translateX(-50%) scale(1.1); }
-        .centered:active { transform: translateX(-50%) scale(1.05); }
-
         /* GÓRA */
-        .brand-btn { top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
+        .brand-btn { position: absolute; top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
         .brand-ccrt { left: 32px; }
         .brand-czasowniki { right: 32px; text-align: right; }
 
@@ -60,14 +45,25 @@
         #panel-ccrt { left: 32px; }
         #panel-czasowniki { right: 32px; text-align: right; max-width: 220px; }
 
-        /* DOLNA BELKA */
-        .btn-0 { bottom: 40px; left: 32px; }
-        .btn-33 { bottom: 40px; left: 33.33%; }
-        .btn-66 { bottom: 40px; left: 66.66%; }
-        .btn-99 { bottom: 40px; right: 32px; }
+        /* NOWA BELKA DOLNA - RÓWNE ODSTĘPY */
+        .nav-bar {
+            position: absolute; bottom: 40px; left: 32px; right: 32px;
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; pointer-events: none;
+        }
+        .nav-bar .icon-btn { pointer-events: auto; }
 
         .icon-btn { width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; }
         .icon-btn svg { width: 100%; height: 100%; }
+
+        /* FEEDBACK PC */
+        @media (hover: hover) {
+            .brand-btn:hover { transform: scale(1.03) translateZ(0); }
+            .icon-btn:hover { transform: scale(1.1) translateZ(0); }
+        }
+
+        /* FEEDBACK MOBILE - MOCNIEJSZY */
+        .ui-element:active { transform: scale(1.1) translateZ(0); }
 
         @media (min-width: 769px) {
             .brand-btn { font-size: 21px; }
@@ -76,8 +72,7 @@
             .info-panel { font-size: 18px; top: 75px; }
             #panel-ccrt { left: 40px; }
             #panel-czasowniki { right: 40px; max-width: 450px; }
-            .btn-0 { left: 40px; }
-            .btn-99 { right: 40px; }
+            .nav-bar { left: 40px; right: 40px; }
             .icon-btn { width: 32px; height: 32px; }
         }
     </style>
@@ -90,23 +85,25 @@
     <button class="ui-element brand-btn brand-czasowniki" id="toggle-czasowniki">CZASOWNIKI</button>
     <div id="panel-czasowniki" class="info-panel">Obiekty kinetyczne badające granicę między precyzyjną inżynieryjną a wizualnym absurdem.</div>
 
-    <button class="ui-element icon-btn btn-0" id="theme-toggle">
-        <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"/></svg>
-    </button>
+    <div class="nav-bar">
+        <button class="ui-element icon-btn" id="theme-toggle">
+            <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"/></svg>
+        </button>
 
-    <button class="ui-element icon-btn btn-33 centered" id="pause-toggle">
-        <svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        <svg id="icon-play" viewBox="0 0 24 24" style="display:none;"><path d="M8 5v14l11-7z"/></svg>
-    </button>
+        <button class="ui-element icon-btn" id="pause-toggle">
+            <svg id="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+            <svg id="icon-play" viewBox="0 0 24 24" style="display:none;"><path d="M8 5v14l11-7z"/></svg>
+        </button>
 
-    <button class="ui-element icon-btn btn-66 centered" id="action-toggle">
-        <span id="ar-label" style="font-weight:800; font-size:16px; letter-spacing:2px; display:none;">AR</span>
-        <svg id="fs-icon" viewBox="0 0 24 24" style="display:none;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-    </button>
+        <button class="ui-element icon-btn" id="action-toggle">
+            <span id="ar-label" style="font-weight:800; font-size:16px; letter-spacing:2px; display:none;">AR</span>
+            <svg id="fs-icon" viewBox="0 0 24 24" style="display:none;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+        </button>
 
-    <button class="ui-element icon-btn btn-99" id="reset-view">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
-    </button>
+        <button class="ui-element icon-btn" id="reset-view">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+        </button>
+    </div>
 
     <model-viewer 
         id="clock-model"
@@ -118,15 +115,27 @@
         exposure="1.6" 
         environment-intensity="1.8"
         autoplay auto-rotate
+        rotation-per-second="10deg"
+        auto-rotate-delay="0"
         camera-orbit="0deg 55deg 180%"
         camera-target="0m 0.04m 0m"
-        min-camera-orbit="auto auto 100%"
-        max-camera-orbit="auto auto 600%"
         interaction-prompt="none">
     </model-viewer>
 
     <script>
         const modelViewer = document.querySelector('#clock-model');
+
+        // Płynny start rotacji
+        modelViewer.addEventListener('load', () => {
+            modelViewer.autoRotate = true;
+            modelViewer.rotationPerSecond = "0deg"; // Start od zera
+            let speed = 0;
+            const accel = setInterval(() => {
+                speed += 0.5;
+                modelViewer.rotationPerSecond = `${speed}deg`;
+                if (speed >= 12) clearInterval(accel); // Docelowa prędkość
+            }, 100);
+        });
 
         const goHome = () => {
             const isMobile = window.innerWidth < 768;
