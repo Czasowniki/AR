@@ -27,12 +27,9 @@
             -webkit-tap-highlight-color: transparent;
             outline: none;
             mix-blend-mode: difference;
-            /* Kolor ustawiony na jasny, difference odwróci go na biały/czarny zależnie od tła */
             color: #f0f0f0 !important;
+            fill: #f0f0f0 !important;
         }
-        
-        /* Wymuszenie koloru dla ikon SVG, aby mix-blend-mode działał poprawnie na mobile */
-        .ui-element svg { fill: #f0f0f0 !important; }
 
         /* GÓRA */
         .brand-btn { position: absolute; top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
@@ -79,7 +76,7 @@
         }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
     <button class="ui-element brand-btn brand-ccrt" id="toggle-ccrt">CCRT</button>
     <div id="panel-ccrt" class="info-panel">Mechanizm kwarcowy<br>120x100x100 mm<br>Druk 3D PLA</div>
@@ -112,7 +109,7 @@
         src="ZEGAR.glb" 
         ar ar-modes="webxr scene-viewer quick-look" 
         camera-controls
-        shadow-intensity="15" 
+        shadow-intensity="10" 
         shadow-softness="0.1"
         exposure="1.6" 
         environment-intensity="1.8"
