@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
-    <title>Czasownik CCRT</title>
+    <title>Czasowniki CCRT</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
         :root { --bg-color: #ffffff; }
@@ -24,9 +24,28 @@
             mix-blend-mode: difference;
             color: #f0f0f0 !important;
             fill: #f0f0f0 !important;
+            transition: transform 0.15s ease, opacity 0.2s ease;
+            opacity: 0.8;
+            /* USUNIĘCIE NIEBIESKIEGO POLA NA ANDROIDZIE */
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
         }
 
-        /* GÓRA - Skalowanie Mobile */
+        /* FEEDBACK NA PC (Hover) */
+        @media (hover: hover) {
+            .ui-element:hover {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
+        /* FEEDBACK NA TELEFONIE (Kliknięcie) */
+        .ui-element:active {
+            transform: scale(1.05); /* Delikatne powiększenie pod palcem */
+            opacity: 1;
+        }
+
+        /* GÓRA */
         .brand-btn { top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
         .brand-ccrt { left: 32px; }
         .brand-czasowniki { right: 32px; text-align: right; }
@@ -40,7 +59,7 @@
         #panel-ccrt { left: 32px; }
         #panel-czasowniki { right: 32px; text-align: right; max-width: 220px; }
 
-        /* BELKA PROCENTOWA */
+        /* BELKA DOLNA */
         .btn-0 { bottom: 40px; left: 32px; }
         .btn-33 { bottom: 40px; left: 33.33%; transform: translateX(-50%); }
         .btn-66 { bottom: 40px; left: 66.66%; transform: translateX(-50%); }
@@ -98,26 +117,21 @@
         camera-orbit="0deg 55deg 180%"
         camera-target="0m 0.04m 0m"
         min-camera-orbit="auto auto 100%"
-        max-camera-orbit="auto auto 600%">
+        max-camera-orbit="auto auto 600%"
+        interaction-prompt="none">
     </model-viewer>
 
     <script>
         const modelViewer = document.querySelector('#clock-model');
 
-        // HOME RESET - Tylko kamera, bez przewijania animacji
         const goHome = () => {
             const isMobile = window.innerWidth < 768;
-            // Sztywne ustawienia "galeryjne"
-            const orbit = isMobile ? "0deg 55deg 165%" : "0deg 55deg 180%";
-            const target = isMobile ? "0m 0.06m 0m" : "0m 0.04m 0m";
-            
-            modelViewer.cameraOrbit = orbit;
-            modelViewer.cameraTarget = target;
+            modelViewer.cameraOrbit = isMobile ? "0deg 55deg 165%" : "0deg 55deg 180%";
+            modelViewer.cameraTarget = isMobile ? "0m 0.06m 0m" : "0m 0.04m 0m";
             modelViewer.fieldOfView = "auto";
         };
         document.querySelector('#reset-view').onclick = goHome;
 
-        // PAUZA SELEKTYWNA
         const pauseBtn = document.getElementById('pause-toggle');
         const iconPause = document.getElementById('icon-pause');
         const iconPlay = document.getElementById('icon-play');
@@ -136,7 +150,6 @@
             }
         };
 
-        // PANELE INFO
         const togglePanel = (show, hide) => {
             document.getElementById(show).classList.toggle('visible');
             document.getElementById(hide).classList.remove('visible');
@@ -144,13 +157,11 @@
         document.getElementById('toggle-ccrt').onclick = () => togglePanel('panel-ccrt', 'panel-czasowniki');
         document.getElementById('toggle-czasowniki').onclick = () => togglePanel('panel-czasowniki', 'panel-ccrt');
 
-        // MOTYW
         document.getElementById('theme-toggle').onclick = () => {
             document.body.classList.toggle('dark-mode');
             modelViewer.exposure = document.body.classList.contains('dark-mode') ? "2.8" : "1.6";
         };
 
-        // AR / FULLSCREEN
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
             document.getElementById('ar-label').style.display = 'block';
@@ -163,7 +174,6 @@
             };
         }
 
-        // Przy załadowaniu ustawiamy pozycję startową
         window.addEventListener('load', goHome);
     </script>
 </body>
