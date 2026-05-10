@@ -3,95 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <title>Czasowniki CCRT</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { 
-            --bg-color: #ffffff; 
-            --ui-color: #000000; 
-        }
+        :root { --bg-color: #ffffff; --ui-color: #000000; }
         body { 
             margin: 0; background-color: var(--bg-color); 
             transition: background-color 0.5s ease;
             height: 100vh; overflow: hidden; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            -webkit-font-smoothing: antialiased;
         }
-        body.dark-mode { 
-            --bg-color: #121212; 
-            --ui-color: #f0f0f0; 
-        }
+        body.dark-mode { --bg-color: #121212; --ui-color: #f0f0f0; }
 
         model-viewer { width: 100%; height: 100vh; background-color: transparent; outline: none; }
 
+        /* BAZA DLA WSZYSTKICH PRZYCISKÓW */
         .ui-element {
             position: absolute;
             background: none; border: none; padding: 0;
             cursor: pointer; z-index: 100;
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.5s ease;
-            will-change: transform;
-            transform: translateZ(0);
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             -webkit-tap-highlight-color: transparent;
             outline: none;
-            color: var(--ui-color) !important;
+            color: var(--ui-color);
+            fill: var(--ui-color);
         }
-        
-        .ui-element svg path, .ui-element svg circle { 
-            fill: var(--ui-color) !important; 
-            transition: fill 0.5s ease;
-        }
+        .ui-element svg path, .ui-element svg circle { fill: inherit; transition: fill 0.5s ease; }
 
-        /* GÓRA */
+        /* GÓRA - BRANDING */
         .brand-btn { top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
         .brand-ccrt { left: 32px; }
         .brand-czasowniki { right: 32px; text-align: right; }
 
+        /* PANELE TEKSTOWE */
         .info-panel {
-            position: absolute; top: 60px; 
-            color: var(--ui-color);
+            position: absolute; top: 65px; color: var(--ui-color);
             opacity: 0; pointer-events: none; transition: all 0.4s ease; z-index: 90;
-            font-weight: 100; font-size: 13px; line-height: 1.5; letter-spacing: 0.5px;
+            font-weight: 100; font-size: 14px; line-height: 1.5;
         }
         .info-panel.visible { opacity: 1; pointer-events: auto; }
         #panel-ccrt { left: 32px; }
         #panel-czasowniki { right: 32px; text-align: right; max-width: 220px; }
 
-        /* DOLNA BELKA - PRECYZYJNE POZYCJONOWANIE */
-        .icon-btn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; bottom: 40px; }
-        .icon-btn svg { width: 100%; height: 100%; }
-
-        .btn-theme { left: 32px; } /* Ikona 1: Przy krawędzi */
-        .btn-pause { left: 36%; transform: translateX(-50%); } /* Ikona 2: Na 36% */
-        .btn-action { left: 63%; transform: translateX(-50%); } /* Ikona 3: Na 63% */
-        .btn-reset { right: 32px; } /* Ikona 4: Przy krawędzi */
+        /* DOLNE IKONY - PRECYZYJNE POZYCJE */
+        .icon-btn { width: 28px; height: 28px; bottom: 40px; display: flex; align-items: center; justify-content: center; }
+        .btn-theme { left: 32px; }
+        .btn-pause { left: 36%; transform: translateX(-50%); }
+        .btn-action { left: 63%; transform: translateX(-50%); }
+        .btn-reset { right: 32px; }
 
         /* FEEDBACK PC */
         @media (hover: hover) {
-            .brand-btn:hover { transform: scale(1.03) translateZ(0); }
-            .icon-btn:hover { transform: scale(1.1) translateZ(0); }
-            /* Specjalny hover dla środkowych ikon, by nie psuć translacji */
-            .btn-pause:hover, .btn-action:hover { transform: translateX(-50%) scale(1.1) translateZ(0); }
+            .brand-btn:hover { transform: scale(1.03); }
+            .icon-btn:hover { transform: scale(1.1); }
+            .btn-pause:hover, .btn-action:hover { transform: translateX(-50%) scale(1.1); }
         }
-
         /* FEEDBACK MOBILE */
-        .ui-element:active { transform: scale(1.1) translateZ(0); }
-        .btn-pause:active, .btn-action:active { transform: translateX(-50%) scale(1.1) translateZ(0); }
+        .ui-element:active { transform: scale(1.1); }
+        .btn-pause:active, .btn-action:active { transform: translateX(-50%) scale(1.1); }
 
         @media (min-width: 769px) {
             .brand-btn { font-size: 21px; }
-            .brand-ccrt { left: 40px; }
-            .brand-czasowniki { right: 40px; }
+            .brand-ccrt, .btn-theme { left: 40px; }
+            .brand-czasowniki, .btn-reset { right: 40px; }
             .info-panel { font-size: 18px; top: 75px; }
             #panel-ccrt { left: 40px; }
             #panel-czasowniki { right: 40px; max-width: 450px; }
-            
-            /* Precyzyjne pozycje dla PC */
-            .btn-theme { left: 40px; }
-            .btn-pause { left: 36%; }
-            .btn-action { left: 63%; }
-            .btn-reset { right: 40px; }
-            
             .icon-btn { width: 32px; height: 32px; }
         }
     </style>
@@ -115,4 +92,97 @@
 
     <button class="ui-element icon-btn btn-action" id="action-toggle">
         <span id="ar-label" style="font-weight:800; font-size:16px; letter-spacing:2px; display:none;">AR</span>
-        <svg id="fs-icon" viewBox="0 0 24 24" style="display:none;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V
+        <svg id="fs-icon" viewBox="0 0 24 24" style="display:none;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+    </button>
+
+    <button class="ui-element icon-btn btn-reset" id="reset-view">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+    </button>
+
+    <model-viewer 
+        id="clock-model"
+        src="ZEGAR.glb" 
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-controls disable-pan
+        shadow-intensity="12" 
+        shadow-softness="0.3"
+        exposure="1.6" 
+        environment-intensity="1.8"
+        autoplay auto-rotate
+        rotation-per-second="0deg"
+        camera-orbit="0deg 55deg 180%"
+        camera-target="0m 0.04m 0m"
+        min-camera-orbit="auto auto 100%" 
+        max-camera-orbit="auto auto 600%"
+        interaction-prompt="none">
+    </model-viewer>
+
+    <script>
+        const modelViewer = document.querySelector('#clock-model');
+
+        // Płynny start
+        modelViewer.addEventListener('load', () => {
+            let speed = 0;
+            const accel = setInterval(() => {
+                speed += 0.4;
+                modelViewer.rotationPerSecond = `${speed}deg`;
+                if (speed >= 10) clearInterval(accel);
+            }, 100);
+        });
+
+        // Reset
+        document.querySelector('#reset-view').onclick = () => {
+            const isMobile = window.innerWidth < 768;
+            modelViewer.cameraOrbit = isMobile ? "0deg 55deg 165%" : "0deg 55deg 180%";
+            modelViewer.cameraTarget = isMobile ? "0m 0.06m 0m" : "0m 0.04m 0m";
+        };
+
+        // Pauza
+        const pauseBtn = document.getElementById('pause-toggle');
+        pauseBtn.onclick = () => {
+            const isPaused = pauseBtn.dataset.paused === "true";
+            if (!isPaused) {
+                modelViewer.pause();
+                document.getElementById('icon-pause').style.display = 'none';
+                document.getElementById('icon-play').style.display = 'block';
+                pauseBtn.dataset.paused = "true";
+            } else {
+                modelViewer.play();
+                document.getElementById('icon-pause').style.display = 'block';
+                document.getElementById('icon-play').style.display = 'none';
+                pauseBtn.dataset.paused = "false";
+            }
+        };
+
+        // Panele
+        const togglePanel = (id) => {
+            const p = document.getElementById(id);
+            const other = id === 'panel-ccrt' ? 'panel-czasowniki' : 'panel-ccrt';
+            document.getElementById(other).classList.remove('visible');
+            p.classList.toggle('visible');
+        };
+        document.getElementById('toggle-ccrt').onclick = () => togglePanel('panel-ccrt');
+        document.getElementById('toggle-czasowniki').onclick = () => togglePanel('panel-czasowniki');
+
+        // Theme
+        document.getElementById('theme-toggle').onclick = () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            modelViewer.exposure = isDark ? "1.6" : "2.8";
+        };
+
+        // Mobile Detect
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            document.getElementById('ar-label').style.display = 'block';
+            document.getElementById('action-toggle').onclick = () => modelViewer.activateAR();
+        } else {
+            document.getElementById('fs-icon').style.display = 'block';
+            document.getElementById('action-toggle').onclick = () => {
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+                else document.exitFullscreen();
+            };
+        }
+    </script>
+</body>
+</html>
