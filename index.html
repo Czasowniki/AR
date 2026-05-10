@@ -11,7 +11,8 @@
             margin: 0; background-color: var(--bg-color); 
             transition: background-color 0.5s ease;
             height: 100vh; overflow: hidden; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
         body.dark-mode { --bg-color: #121212; }
 
@@ -27,22 +28,41 @@
             mix-blend-mode: difference;
             color: #ffffff !important; 
             fill: #ffffff !important;
+            text-transform: uppercase;
         }
-        .ui-element svg path, .ui-element svg circle { fill: #ffffff !important; }
 
-        .brand-btn { top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
+        /* NAGŁÓWKI - Zrównoważone nasycenie */
+        .brand-btn { 
+            top: 32px; 
+            font-weight: 600; /* Semi-Bold dla elegancji i siły */
+            font-size: 15px; 
+            letter-spacing: 0.2em; /* Powietrze, ale bez przesady */
+            text-rendering: optimizeLegibility;
+        }
         .brand-ccrt { left: 32px; }
         .brand-czasowniki { right: 32px; text-align: right; }
 
+        /* OPISY - Czytelna lekkość */
         .info-panel {
-            position: absolute; top: 65px; color: #ffffff; mix-blend-mode: difference;
-            opacity: 0; pointer-events: none; transition: all 0.4s ease; z-index: 90;
-            font-weight: 100; font-size: 14px; line-height: 1.5;
+            position: absolute; 
+            top: 62px; 
+            color: #ffffff; 
+            mix-blend-mode: difference;
+            opacity: 0; 
+            pointer-events: none; 
+            transition: all 0.4s ease; 
+            z-index: 90;
+            font-weight: 300; /* Light dla kontrastu z nagłówkami */
+            font-size: 11px; 
+            line-height: 1.6; 
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
         .info-panel.visible { opacity: 1; pointer-events: auto; }
         #panel-ccrt { left: 32px; }
-        #panel-czasowniki { right: 32px; text-align: right; max-width: 220px; }
+        #panel-czasowniki { right: 32px; text-align: right; max-width: 280px; }
 
+        /* DOLNE IKONY */
         .icon-btn { width: 28px; height: 28px; bottom: 40px; display: flex; align-items: center; justify-content: center; }
         .btn-theme { left: 32px; }
         .btn-pause { left: 36%; transform: translateX(-50%); }
@@ -50,18 +70,16 @@
         .btn-reset { right: 32px; }
 
         @media (hover: hover) {
-            .brand-btn:hover { transform: scale(1.03); }
+            .brand-btn:hover { transform: scale(1.02); }
             .icon-btn:hover { transform: scale(1.1); }
             .btn-pause:hover, .btn-action:hover { transform: translateX(-50%) scale(1.1); }
         }
-        .ui-element:active { transform: scale(1.1); }
-        .btn-pause:active, .btn-action:active { transform: translateX(-50%) scale(1.1); }
 
         @media (min-width: 769px) {
-            .brand-btn { font-size: 21px; }
+            .brand-btn { font-size: 19px; letter-spacing: 0.25em; }
             .brand-ccrt, .btn-theme { left: 40px; }
             .brand-czasowniki, .btn-reset { right: 40px; }
-            .info-panel { font-size: 18px; top: 75px; }
+            .info-panel { font-size: 12px; top: 72px; }
             #panel-ccrt { left: 40px; }
             #panel-czasowniki { right: 40px; max-width: 450px; }
             .icon-btn { width: 32px; height: 32px; }
@@ -71,10 +89,10 @@
 <body>
 
     <button class="ui-element brand-btn brand-ccrt" id="toggle-ccrt">CCRT</button>
-    <div id="panel-ccrt" class="info-panel">Mechanizm kwarcowy<br>120x100x100 mm<br>Druk 3D PLA</div>
+    <div id="panel-ccrt" class="info-panel">MECHANIZM KWARCOWY<br>120x100x100 MM<br>DRUK 3D PLA</div>
 
     <button class="ui-element brand-btn brand-czasowniki" id="toggle-czasowniki">CZASOWNIKI</button>
-    <div id="panel-czasowniki" class="info-panel">Obiekty kinetyczne badające granicę między precyzyjną inżynieryjną a wizualnym absurdem.</div>
+    <div id="panel-czasowniki" class="info-panel">OBIEKTY KINETYCZNE BADAJĄCE GRANICĘ MIĘDZY PRECYZYJNĄ INŻYNIERIĄ A WIZUALNYM ABSURDEM.</div>
 
     <button class="ui-element icon-btn btn-theme" id="theme-toggle">
         <svg viewBox="0 0 24 24"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"/></svg>
@@ -86,7 +104,7 @@
     </button>
 
     <button class="ui-element icon-btn btn-action" id="action-toggle">
-        <span id="ar-label" style="font-weight:800; font-size:16px; letter-spacing:2px; display:none;">AR</span>
+        <span id="ar-label" style="font-weight:600; font-size:14px; letter-spacing:2px; display:none;">AR</span>
         <svg id="fs-icon" viewBox="0 0 24 24" style="display:none;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
     </button>
 
@@ -99,7 +117,7 @@
         src="ZEGAR.glb" 
         ar ar-modes="webxr scene-viewer quick-look" 
         camera-controls disable-pan
-        shadow-intensity="2" 
+        shadow-intensity="3" 
         shadow-softness="1"
         exposure="1.6" 
         environment-intensity="1.8"
