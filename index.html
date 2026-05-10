@@ -9,14 +9,17 @@
     <style>
         :root { --bg-color: #ffffff; --selection-bg: #000000; --selection-text: #ffffff; }
         ::selection { background: var(--selection-bg); color: var(--selection-text); }
+        
         body { 
             margin: 0; background-color: var(--bg-color); 
             transition: background-color 0.5s ease;
             height: 100vh; overflow: hidden; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
         }
         body.dark-mode { --bg-color: #121212; --selection-bg: #ffffff; --selection-text: #000000; }
+        
         model-viewer { width: 100%; height: 100vh; background-color: transparent; outline: none; }
 
         .ui-element {
@@ -26,6 +29,7 @@
             background: none; border: none; padding: 0;
             cursor: pointer; text-decoration: none !important;
             -webkit-tap-highlight-color: transparent;
+            opacity: 1; /* Pełna moc koloru jak w typo u góry */
         }
 
         /* GÓRA */
@@ -36,13 +40,18 @@
         .info-panel {
             position: absolute; top: 75px; color: #f0f0f0; mix-blend-mode: difference;
             opacity: 0; pointer-events: none; transition: all 0.4s ease; z-index: 90;
-            font-size: 14px; line-height: 1.6;
         }
         .info-panel.visible { opacity: 1; pointer-events: auto; }
-        #panel-ccrt { left: 40px; }
-        #panel-czasowniki { right: 40px; text-align: right; max-width: 280px; }
+        
+        #panel-ccrt { left: 40px; font-size: 14px; line-height: 1.6; font-weight: 400; }
+        
+        #panel-czasowniki { 
+            right: 40px; text-align: right; max-width: 400px; 
+            font-size: 20px; line-height: 1.4; font-weight: 100; /* Powiększony i odchudzony */
+            letter-spacing: 0.5px;
+        }
 
-        /* BELKA DOLNA - PRECYZYJNY ROZKŁAD */
+        /* BELKA DOLNA */
         .nav-bar {
             position: absolute; bottom: 40px; left: 40px; right: 40px;
             height: 32px; display: flex; justify-content: space-between; align-items: center;
@@ -50,14 +59,13 @@
         }
         .nav-bar .icon-btn { pointer-events: auto; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
 
-        /* Punkty 33% i 66% realizowane przez flex-basis lub puste divy jeśli trzeba, 
-           ale najdokładniej zrobimy to pozycjonowaniem dla tych dwóch środkowych */
         .pos-33 { position: absolute; left: 33.33%; transform: translateX(-50%); }
         .pos-66 { position: absolute; left: 66.66%; transform: translateX(-50%); }
 
         @media (min-width: 769px) {
             .brand-btn { font-weight: 600; font-size: 21px; }
-            #panel-czasowniki { max-width: 350px; font-size: 13px; }
+            #panel-ccrt { font-size: 13px; }
+            #panel-czasowniki { font-size: 24px; max-width: 500px; }
         }
 
         .ui-element svg { width: 100%; height: 100%; display: block; }
@@ -75,8 +83,7 @@
 
     <button class="ui-element brand-btn brand-czasowniki" id="toggle-czasowniki">CZASOWNIKI</button>
     <div id="panel-czasowniki" class="info-panel">
-        Obiekty kinetyczne badające granicę między precyzyjną inżynieryjną a wizualnym absurdem. <br><br>
-        Zapis procesu zamiast statycznego pomiaru.
+        Obiekty kinetyczne badające granicę między precyzyjną inżynieryjną a wizualnym absurdem.
     </div>
 
     <div class="nav-bar">
@@ -85,7 +92,7 @@
         </button>
 
         <button class="ui-element icon-btn pos-33" id="audio-toggle">
-            <svg id="speaker-icon" viewBox="0 0 24 24">
+            <svg viewBox="0 0 24 24">
                 <path d="M5 9v6h4l5 5V4L9 9H5z"/>
                 <path id="speaker-waves" d="M17.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM15 4.07v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4-.91 7-4.49 7-8.77s-3-7.86-7-8.77z" style="display:none;"/>
             </svg>
@@ -109,7 +116,6 @@
         camera-controls disable-pan
         shadow-intensity="1.5" exposure="1.6" environment-intensity="1.8"
         autoplay
-        /* Ustawienie startowe bez skoku */
         camera-orbit="0deg 55deg 180%"
         camera-target="0m 0.04m 0m"
         min-camera-orbit="auto auto 100%"
@@ -118,25 +124,18 @@
 
     <script>
         const modelViewer = document.querySelector('#clock-model');
-        const tickAudio = new Audio('https://www.soundjay.com/buttons/sounds/button-20.mp3'); 
-        tickAudio.loop = true;
+        let tickAudio = null;
         let isPlaying = false;
 
-        // Resetowanie widoku
         const applyReset = () => {
             const isMobile = window.innerWidth < 768;
             modelViewer.cameraOrbit = isMobile ? "0deg 55deg 165%" : "0deg 55deg 180%";
             modelViewer.cameraTarget = isMobile ? "0m 0.06m 0m" : "0m 0.04m 0m";
         };
 
-        // Dostosowanie startowe przy załadowaniu (jeśli mobile)
-        window.addEventListener('load', () => {
-            if (window.innerWidth < 768) applyReset();
-        });
-
+        window.addEventListener('load', () => { if (window.innerWidth < 768) applyReset(); });
         document.querySelector('#reset-view').addEventListener('click', applyReset);
 
-        // Panele
         const togglePanel = (show, hide) => {
             document.getElementById(show).classList.toggle('visible');
             document.getElementById(hide).classList.remove('visible');
@@ -144,22 +143,31 @@
         document.getElementById('toggle-ccrt').addEventListener('click', () => togglePanel('panel-ccrt', 'panel-czasowniki'));
         document.getElementById('toggle-czasowniki').addEventListener('click', () => togglePanel('panel-czasowniki', 'panel-ccrt'));
 
-        // Audio
-        document.getElementById('audio-toggle').addEventListener('click', () => {
+        // Naprawa Audio
+        document.getElementById('audio-toggle').addEventListener('click', function() {
+            if (!tickAudio) {
+                tickAudio = new Audio('https://actions.google.com/sounds/v1/clocks/mechanical_clock_ticking.ogg');
+                tickAudio.loop = true;
+            }
+            
             isPlaying = !isPlaying;
-            isPlaying ? tickAudio.play() : tickAudio.pause();
-            document.getElementById('speaker-waves').style.display = isPlaying ? 'block' : 'none';
+            if (isPlaying) {
+                tickAudio.play().catch(e => console.log("Audio block:", e));
+                document.getElementById('speaker-waves').style.display = 'block';
+            } else {
+                tickAudio.pause();
+                document.getElementById('speaker-waves').style.display = 'none';
+            }
         });
 
         modelViewer.addEventListener('camera-change', () => {
-            if (isPlaying) {
+            if (tickAudio && isPlaying) {
                 const radius = modelViewer.getCameraOrbit().radius;
                 let vol = 1.5 - (radius / 5);
                 tickAudio.volume = Math.max(0.05, Math.min(1, vol));
             }
         });
 
-        // AR / Fullscreen
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         const actionBtn = document.getElementById('action-toggle');
         if (isMobile) {
@@ -173,7 +181,6 @@
             });
         }
 
-        // Tryb tła
         document.getElementById('theme-toggle').addEventListener('click', () => {
             document.body.classList.toggle('dark-mode');
             modelViewer.exposure = document.body.classList.contains('dark-mode') ? "2.8" : "1.6";
