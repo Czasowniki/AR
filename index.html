@@ -2,51 +2,36 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>CCRT - Zegar</title>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
     <style>
-        :root { 
-            --bg-color: #ffffff; 
-            --ui-white: #ffffff; 
-        }
-        
         html, body {
-            margin: 0; padding: 0; width: 100%; 
-            height: 100vh; height: 100svh; 
-            background-color: var(--bg-color);
-            transition: background-color 0.5s ease;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #ffffff; overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", sans-serif;
             -webkit-font-smoothing: antialiased;
         }
+        body.dark-mode { background-color: #121212; }
 
-        body.dark-mode { --bg-color: #121212; }
-
-        model-viewer { 
-            width: 100%; height: 100%; 
-            background-color: transparent; 
-            outline: none; display: block;
+        /* FUNDAMENT: Model pod spodem */
+        model-viewer {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1; background-color: transparent; outline: none;
         }
 
-        /* UKRYCIE DOMYŚLNEJ IKONY AR NA ANDROIDZIE */
-        model-viewer::part(default-ar-button) {
-            display: none !important;
-        }
-
+        /* FUNDAMENT: UI nad modelem */
         .ui-element {
             position: absolute; background: none; border: none; padding: 0;
             cursor: pointer; z-index: 100;
             mix-blend-mode: difference;
-            color: var(--ui-white) !important; 
-            fill: var(--ui-white) !important;
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
+            color: #ffffff !important; fill: #ffffff !important;
+            transition: transform 0.25s ease;
+            outline: none; -webkit-tap-highlight-color: transparent;
         }
 
-        /* NAGŁÓWKI MOBILE (CAPS LOCK, WAGA 700) */
+        /* NAGŁÓWKI */
         .brand-btn { 
             top: 32px; font-weight: 700; font-size: 15px; 
             letter-spacing: 0.2em; text-transform: uppercase;
@@ -54,55 +39,38 @@
         .brand-ccrt { left: 32px; }
         .brand-czasowniki { right: 32px; text-align: right; }
 
-        /* OPISY (LEKKI FONT 200, WIĘKSZY) */
+        /* OPISY (Większe i lżejsze) */
         .info-panel {
-            position: absolute; top: 65px; 
-            color: var(--ui-white); mix-blend-mode: difference;
-            opacity: 0; pointer-events: none; 
-            transition: opacity 0.4s ease, transform 0.4s ease; 
-            z-index: 90;
-            font-weight: 200; 
-            font-size: 14px;  
-            line-height: 1.5; letter-spacing: 0.03em;
-            text-transform: none;
-            transform: translateY(-5px);
+            position: absolute; top: 65px; color: #ffffff; mix-blend-mode: difference;
+            opacity: 0; pointer-events: none; transition: opacity 0.4s ease; z-index: 90;
+            font-weight: 200; font-size: 14px; line-height: 1.5; text-transform: none;
         }
-        .info-panel.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .info-panel.visible { opacity: 1; pointer-events: auto; }
         #panel-ccrt { left: 32px; }
         #panel-czasowniki { right: 32px; text-align: right; max-width: 320px; }
 
-        /* IKONY DOLNE */
+        /* IKONY */
         .icon-btn { width: 28px; height: 28px; bottom: 40px; display: flex; align-items: center; justify-content: center; }
-        .icon-btn svg { width: 20px; height: 20px; }
-        
-        #ar-label { 
-            font-weight: 800; font-size: 16px; 
-            display: flex; align-items: center; justify-content: center; 
-            width: 20px; height: 20px;
-        }
+        .icon-btn svg { width: 20px; height: 20px; pointer-events: none; }
+        #ar-label { font-weight: 800; font-size: 16px; pointer-events: none; }
 
         .btn-theme { left: 32px; }
         .btn-pause { left: 36%; transform: translateX(-50%); }
         .btn-action { left: 63%; transform: translateX(-50%); }
         .btn-reset { right: 32px; }
 
-        /* OPTYMALIZACJA PC / DESKTOP - WAGA 600 (SEMI-BOLD) */
+        /* PC / DESKTOP */
         @media (min-width: 769px) {
-            .brand-btn { 
-                font-size: 19px; 
-                top: 40px; 
-                font-weight: 600; /* Złoty środek między Bold a Medium */
-                letter-spacing: 0.25em;
-            }
+            .brand-btn { font-size: 19px; top: 40px; font-weight: 600; }
             .info-panel { font-size: 16px; top: 85px; }
             #panel-czasowniki { max-width: 500px; }
             .icon-btn { width: 32px; height: 32px; }
             .icon-btn svg { width: 24px; height: 24px; }
-            #ar-label { 
-                font-size: 20px; 
-                font-weight: 600; /* AR na PC również w wadze 600 dla spójności */
-            }
+            #ar-label { font-size: 20px; font-weight: 600; }
         }
+
+        /* Ukrycie systemowego AR */
+        model-viewer::part(default-ar-button) { display: none !important; }
     </style>
 </head>
 <body>
@@ -134,4 +102,89 @@
     </button>
 
     <button class="ui-element icon-btn btn-reset" id="reset-view">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+    </button>
+
+    <model-viewer 
+        id="clock-model"
+        src="ZEGAR.glb" 
+        ar ar-modes="webxr scene-viewer quick-look" 
+        camera-controls disable-pan
+        shadow-intensity="1" shadow-softness="1"
+        exposure="1.6" environment-intensity="1.8"
+        autoplay auto-rotate rotation-per-second="0deg"
+        camera-orbit="0deg 55deg 180%" camera-target="0m 0.04m 0m"
+        loading="eager" interaction-prompt="none">
+    </model-viewer>
+
+    <script>
+        const CONFIG = {
+            mobileOrbit: "0deg 55deg 165%",
+            desktopOrbit: "0deg 55deg 180%",
+            mobileTarget: "0m 0.06m 0m",
+            desktopTarget: "0m 0.04m 0m",
+            rotationSpeed: 10
+        };
+
+        const mv = document.querySelector('#clock-model');
+
+        mv.addEventListener('load', () => {
+            let s = 0;
+            const accel = setInterval(() => {
+                s += 0.4;
+                mv.rotationPerSecond = `${s}deg`;
+                if (s >= CONFIG.rotationSpeed) clearInterval(accel);
+            }, 100);
+        });
+
+        document.getElementById('reset-view').onclick = () => {
+            const isMob = window.innerWidth < 768;
+            mv.cameraOrbit = isMob ? CONFIG.mobileOrbit : CONFIG.desktopOrbit;
+            mv.cameraTarget = isMob ? CONFIG.mobileTarget : CONFIG.desktopTarget;
+        };
+
+        const togglePanel = (id) => {
+            const p = document.getElementById(id);
+            const other = id === 'panel-ccrt' ? 'panel-czasowniki' : 'panel-ccrt';
+            document.getElementById(other).classList.remove('visible');
+            p.classList.toggle('visible');
+        };
+        document.getElementById('toggle-ccrt').onclick = () => togglePanel('panel-ccrt');
+        document.getElementById('toggle-czasowniki').onclick = () => togglePanel('panel-czasowniki');
+
+        document.getElementById('theme-toggle').onclick = () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            mv.exposure = isDark ? "1.6" : "2.8";
+        };
+
+        const pauseBtn = document.getElementById('pause-toggle');
+        pauseBtn.onclick = () => {
+            const isP = pauseBtn.dataset.paused === "true";
+            if (!isP) {
+                mv.pause();
+                document.getElementById('icon-pause').style.display = 'none';
+                document.getElementById('icon-play').style.display = 'block';
+                pauseBtn.dataset.paused = "true";
+            } else {
+                mv.play();
+                document.getElementById('icon-pause').style.display = 'block';
+                document.getElementById('icon-play').style.display = 'none';
+                pauseBtn.dataset.paused = "false";
+            }
+        };
+
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            document.getElementById('ar-label').style.display = 'flex';
+            document.getElementById('action-toggle').onclick = () => mv.activateAR();
+        } else {
+            document.getElementById('fs-icon').style.display = 'block';
+            document.getElementById('action-toggle').onclick = () => {
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+                else document.exitFullscreen();
+            };
+        }
+    </script>
+</body>
+</html>
