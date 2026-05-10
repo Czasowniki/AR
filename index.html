@@ -86,12 +86,12 @@
         .btn-action { left: 63%; transform: translateX(-50%); }
         .btn-reset { right: 32px; }
 
-        /* OPTYMALIZACJA PC / DESKTOP */
+        /* OPTYMALIZACJA PC / DESKTOP - WAGA 600 (SEMI-BOLD) */
         @media (min-width: 769px) {
             .brand-btn { 
                 font-size: 19px; 
                 top: 40px; 
-                font-weight: 500; /* Lżejszy font na PC, żeby nie dominował nad ikonami */
+                font-weight: 600; /* Złoty środek między Bold a Medium */
                 letter-spacing: 0.25em;
             }
             .info-panel { font-size: 16px; top: 85px; }
@@ -100,7 +100,7 @@
             .icon-btn svg { width: 24px; height: 24px; }
             #ar-label { 
                 font-size: 20px; 
-                font-weight: 500; /* AR na PC również lżejszy dla spójności */
+                font-weight: 600; /* AR na PC również w wadze 600 dla spójności */
             }
         }
     </style>
@@ -134,92 +134,4 @@
     </button>
 
     <button class="ui-element icon-btn btn-reset" id="reset-view">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
-    </button>
-
-    <model-viewer 
-        id="clock-model"
-        src="ZEGAR.glb" 
-        ar ar-modes="webxr scene-viewer quick-look" 
-        camera-controls disable-pan
-        shadow-intensity="1" shadow-softness="1"
-        exposure="1.6" environment-intensity="1.8"
-        autoplay auto-rotate rotation-per-second="0deg"
-        camera-orbit="0deg 55deg 180%" camera-target="0m 0.04m 0m"
-        min-camera-orbit="auto auto 100%" max-camera-orbit="auto auto 600%"
-        loading="eager" interaction-prompt="none">
-    </model-viewer>
-
-    <script>
-        const CONFIG = {
-            mobileOrbit: "0deg 55deg 165%",
-            desktopOrbit: "0deg 55deg 180%",
-            mobileTarget: "0m 0.06m 0m",
-            desktopTarget: "0m 0.04m 0m",
-            rotationSpeed: 10
-        };
-
-        const mv = document.querySelector('#clock-model');
-
-        mv.addEventListener('load', () => {
-            let s = 0;
-            const accel = setInterval(() => {
-                s += 0.4;
-                mv.rotationPerSecond = `${s}deg`;
-                if (s >= CONFIG.rotationSpeed) clearInterval(accel);
-            }, 100);
-        });
-
-        document.querySelector('#reset-view').onclick = () => {
-            const isMob = window.innerWidth < 768;
-            mv.cameraOrbit = isMob ? CONFIG.mobileOrbit : CONFIG.desktopOrbit;
-            mv.cameraTarget = isMob ? CONFIG.mobileTarget : CONFIG.desktopTarget;
-            mv.fieldOfView = "auto";
-        };
-
-        const togglePanel = (id) => {
-            const p = document.getElementById(id);
-            const other = id === 'panel-ccrt' ? 'panel-czasowniki' : 'panel-ccrt';
-            document.getElementById(other).classList.remove('visible');
-            p.classList.toggle('visible');
-        };
-        document.getElementById('toggle-ccrt').onclick = () => togglePanel('panel-ccrt');
-        document.getElementById('toggle-czasowniki').onclick = () => togglePanel('panel-czasowniki');
-
-        document.getElementById('theme-toggle').onclick = () => {
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            mv.exposure = isDark ? "1.6" : "2.8";
-            document.querySelector('meta[name="theme-color"]').setAttribute('content', isDark ? '#121212' : '#ffffff');
-        };
-
-        const pauseBtn = document.getElementById('pause-toggle');
-        pauseBtn.onclick = () => {
-            const isP = pauseBtn.dataset.paused === "true";
-            if (!isP) {
-                mv.pause();
-                document.getElementById('icon-pause').style.display = 'none';
-                document.getElementById('icon-play').style.display = 'block';
-                pauseBtn.dataset.paused = "true";
-            } else {
-                mv.play();
-                document.getElementById('icon-pause').style.display = 'block';
-                document.getElementById('icon-play').style.display = 'none';
-                pauseBtn.dataset.paused = "false";
-            }
-        };
-
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        if (isMobile) {
-            document.getElementById('ar-label').style.display = 'flex';
-            document.getElementById('action-toggle').onclick = () => mv.activateAR();
-        } else {
-            document.getElementById('fs-icon').style.display = 'block';
-            document.getElementById('action-toggle').onclick = () => {
-                if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-                else document.exitFullscreen();
-            };
-        }
-    </script>
-</body>
-</html>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12
