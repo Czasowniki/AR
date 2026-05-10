@@ -17,7 +17,6 @@
 
         model-viewer { width: 100%; height: 100vh; background-color: transparent; outline: none; }
 
-        /* BAZA DLA WSZYSTKICH PRZYCISKÓW */
         .ui-element {
             position: absolute;
             background: none; border: none; padding: 0;
@@ -30,12 +29,10 @@
         }
         .ui-element svg path, .ui-element svg circle { fill: inherit; transition: fill 0.5s ease; }
 
-        /* GÓRA - BRANDING */
         .brand-btn { top: 32px; font-weight: 700; font-size: 18px; letter-spacing: 2px; }
         .brand-ccrt { left: 32px; }
         .brand-czasowniki { right: 32px; text-align: right; }
 
-        /* PANELE TEKSTOWE */
         .info-panel {
             position: absolute; top: 65px; color: var(--ui-color);
             opacity: 0; pointer-events: none; transition: all 0.4s ease; z-index: 90;
@@ -45,20 +42,17 @@
         #panel-ccrt { left: 32px; }
         #panel-czasowniki { right: 32px; text-align: right; max-width: 220px; }
 
-        /* DOLNE IKONY - PRECYZYJNE POZYCJE */
         .icon-btn { width: 28px; height: 28px; bottom: 40px; display: flex; align-items: center; justify-content: center; }
         .btn-theme { left: 32px; }
         .btn-pause { left: 36%; transform: translateX(-50%); }
         .btn-action { left: 63%; transform: translateX(-50%); }
         .btn-reset { right: 32px; }
 
-        /* FEEDBACK PC */
         @media (hover: hover) {
             .brand-btn:hover { transform: scale(1.03); }
             .icon-btn:hover { transform: scale(1.1); }
             .btn-pause:hover, .btn-action:hover { transform: translateX(-50%) scale(1.1); }
         }
-        /* FEEDBACK MOBILE */
         .ui-element:active { transform: scale(1.1); }
         .btn-pause:active, .btn-action:active { transform: translateX(-50%) scale(1.1); }
 
@@ -120,7 +114,6 @@
     <script>
         const modelViewer = document.querySelector('#clock-model');
 
-        // Płynny start
         modelViewer.addEventListener('load', () => {
             let speed = 0;
             const accel = setInterval(() => {
@@ -130,14 +123,16 @@
             }, 100);
         });
 
-        // Reset
+        // NAPRAWIONY RESET
         document.querySelector('#reset-view').onclick = () => {
             const isMobile = window.innerWidth < 768;
+            // Ustawiamy orbitę i target
             modelViewer.cameraOrbit = isMobile ? "0deg 55deg 165%" : "0deg 55deg 180%";
             modelViewer.cameraTarget = isMobile ? "0m 0.06m 0m" : "0m 0.04m 0m";
+            // KLUCZ: Resetujemy pole widzenia (zoom), aby wrócić do bazy
+            modelViewer.fieldOfView = "auto";
         };
 
-        // Pauza
         const pauseBtn = document.getElementById('pause-toggle');
         pauseBtn.onclick = () => {
             const isPaused = pauseBtn.dataset.paused === "true";
@@ -154,7 +149,6 @@
             }
         };
 
-        // Panele
         const togglePanel = (id) => {
             const p = document.getElementById(id);
             const other = id === 'panel-ccrt' ? 'panel-czasowniki' : 'panel-ccrt';
@@ -164,14 +158,12 @@
         document.getElementById('toggle-ccrt').onclick = () => togglePanel('panel-ccrt');
         document.getElementById('toggle-czasowniki').onclick = () => togglePanel('panel-czasowniki');
 
-        // Theme
         document.getElementById('theme-toggle').onclick = () => {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             modelViewer.exposure = isDark ? "1.6" : "2.8";
         };
 
-        // Mobile Detect
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         if (isMobile) {
             document.getElementById('ar-label').style.display = 'block';
