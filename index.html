@@ -27,7 +27,6 @@
             cursor: pointer; z-index: 100;
             mix-blend-mode: difference;
             color: #f0f0f0 !important;
-            fill: #f0f0f0 !important;
         }
 
         /* GÓRA - BRANDING */
@@ -35,18 +34,19 @@
         .brand-ccrt { left: 40px; }
         .brand-czasowniki { right: 40px; text-align: right; }
 
-        /* PANELE INFO */
+        /* PANELE INFO - NAPRAWIONE WIDOCZNOŚĆ */
         .info-panel {
             position: absolute; top: 75px; color: #f0f0f0; mix-blend-mode: difference;
-            opacity: 0; pointer-events: none; transition: all 0.4s ease; z-index: 90;
+            display: none; /* Domyślnie ukryte */
+            z-index: 90;
             font-weight: 100; letter-spacing: 0.5px;
         }
-        .info-panel.visible { opacity: 1; pointer-events: auto; }
+        .info-panel.visible { display: block; } /* Pokazane po kliknięciu */
         
-        #panel-ccrt { left: 40px; font-size: 18px; line-height: 1.6; }
+        #panel-ccrt { left: 40px; font-size: 18px; line-height: 1.6; text-align: left; }
         #panel-czasowniki { right: 40px; text-align: right; max-width: 450px; font-size: 18px; line-height: 1.4; }
 
-        /* DOLNA BELKA - IKONY */
+        /* DOLNA BELKA - IKONY - NAPRAWIONE WIDOCZNOŚĆ */
         .nav-bar {
             position: absolute; bottom: 40px; left: 40px; right: 40px;
             height: 32px; display: flex; justify-content: space-between; align-items: center;
@@ -55,7 +55,8 @@
         .nav-bar .icon-btn { pointer-events: auto; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
         
         .icon-btn svg { width: 28px; height: 28px; }
-        .icon-btn svg path, .icon-btn svg circle { fill: #f0f0f0 !important; }
+        /* Wymuszenie jasnego koloru na ikonach na PC */
+        .icon-btn svg path, .icon-btn svg circle { fill: #f0f0f0 !important; opacity: 1; }
 
         .pos-33 { position: absolute; left: 33.33%; transform: translateX(-50%); }
         .pos-66 { position: absolute; left: 66.66%; transform: translateX(-50%); }
@@ -117,19 +118,20 @@
 
     <script>
         const modelViewer = document.querySelector('#clock-model');
-        const tickAudio = new Audio('tykanie.mp3');
+        const tickAudio = new Audio('tykanie.mp3'); // Używa pliku na GitHubie
         tickAudio.loop = true;
         let isPlaying = false;
         let audioUnlocked = false;
 
-        // Funkcja odblokowująca audio przy dowolnej interakcji (wymóg Chrome)
+        // Funkcja "budząca" audio na PC
         const unlockAudio = () => {
             if (audioUnlocked) return;
             tickAudio.play().then(() => {
                 tickAudio.pause();
                 audioUnlocked = true;
-            }).catch(e => console.log("Audio unlock wait..."));
+            }).catch(e => console.log("Audio waiting..."));
         };
+        // Aktywuje audio po pierwszym kliknięciu w dowolne miejsce strony
         document.body.addEventListener('click', unlockAudio, { once: true });
 
         const applyReset = () => {
@@ -141,13 +143,20 @@
         window.addEventListener('load', () => { if (window.innerWidth < 768) applyReset(); });
         document.querySelector('#reset-view').addEventListener('click', applyReset);
 
-        const togglePanel = (show, hide) => {
-            document.getElementById(show).classList.toggle('visible');
-            document.getElementById(hide).classList.remove('visible');
-        };
-        document.getElementById('toggle-ccrt').addEventListener('click', () => togglePanel('panel-ccrt', 'panel-czasowniki'));
-        document.getElementById('toggle-czasowniki').addEventListener('click', () => togglePanel('panel-czasowniki', 'panel-ccrt'));
+        // NAPRAWIONA LOGIKA PANELE (CCRT i CZASOWNIKI)
+        const panelCCRT = document.getElementById('panel-ccrt');
+        const panelCzasowniki = document.getElementById('panel-czasowniki');
 
+        document.getElementById('toggle-ccrt').addEventListener('click', () => {
+            panelCCRT.classList.toggle('visible');
+            panelCzasowniki.classList.remove('visible'); // Zwiń drugi panel
+        });
+        document.getElementById('toggle-czasowniki').addEventListener('click', () => {
+            panelCzasowniki.classList.toggle('visible');
+            panelCCRT.classList.remove('visible'); // Zwiń drugi panel
+        });
+
+        // Audio Toggle
         document.getElementById('audio-toggle').addEventListener('click', function() {
             isPlaying = !isPlaying;
             if (isPlaying) {
@@ -178,3 +187,12 @@
                 if (!document.fullscreenElement) document.documentElement.requestFullscreen();
                 else document.exitFullscreen();
             });
+        }
+
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            modelViewer.exposure = document.body.classList.contains('dark-mode') ? "2.8" : "1.6";
+        });
+    </script>
+</body>
+</html>
