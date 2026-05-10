@@ -14,61 +14,57 @@
             margin: 0; background-color: var(--bg-color); 
             transition: background-color 0.5s ease;
             height: 100vh; overflow: hidden; 
-            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             -webkit-font-smoothing: antialiased;
-            -webkit-text-size-adjust: 100%;
         }
         body.dark-mode { --bg-color: #121212; --selection-bg: #ffffff; --selection-text: #000000; }
         
         model-viewer { width: 100%; height: 100vh; background-color: transparent; outline: none; }
 
         .ui-element {
-            fill: #f0f0f0 !important;
-            color: #f0f0f0 !important;
-            mix-blend-mode: difference;
+            position: absolute;
             background: none; border: none; padding: 0;
-            cursor: pointer; text-decoration: none !important;
-            -webkit-tap-highlight-color: transparent;
-            opacity: 1; /* Pełna moc koloru jak w typo u góry */
+            cursor: pointer; z-index: 100;
+            mix-blend-mode: difference;
+            color: #f0f0f0 !important;
+            fill: #f0f0f0 !important;
         }
 
-        /* GÓRA */
-        .brand-btn { position: absolute; top: 32px; font-weight: 700; font-size: 24px; letter-spacing: 2px; z-index: 100; }
+        /* GÓRA - BRANDING */
+        .brand-btn { top: 32px; font-weight: 700; font-size: 24px; letter-spacing: 2px; }
         .brand-ccrt { left: 40px; }
         .brand-czasowniki { right: 40px; text-align: right; }
 
+        /* PANELE INFO */
         .info-panel {
             position: absolute; top: 75px; color: #f0f0f0; mix-blend-mode: difference;
             opacity: 0; pointer-events: none; transition: all 0.4s ease; z-index: 90;
+            font-weight: 100; letter-spacing: 0.5px;
         }
         .info-panel.visible { opacity: 1; pointer-events: auto; }
         
-        #panel-ccrt { left: 40px; font-size: 14px; line-height: 1.6; font-weight: 400; }
-        
-        #panel-czasowniki { 
-            right: 40px; text-align: right; max-width: 400px; 
-            font-size: 20px; line-height: 1.4; font-weight: 100; /* Powiększony i odchudzony */
-            letter-spacing: 0.5px;
-        }
+        #panel-ccrt { left: 40px; font-size: 18px; line-height: 1.6; }
+        #panel-czasowniki { right: 40px; text-align: right; max-width: 450px; font-size: 18px; line-height: 1.4; }
 
-        /* BELKA DOLNA */
+        /* DOLNA BELKA - IKONY */
         .nav-bar {
             position: absolute; bottom: 40px; left: 40px; right: 40px;
             height: 32px; display: flex; justify-content: space-between; align-items: center;
             z-index: 100; pointer-events: none;
         }
         .nav-bar .icon-btn { pointer-events: auto; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+        
+        .icon-btn svg { width: 28px; height: 28px; }
+        .icon-btn svg path, .icon-btn svg circle { fill: #f0f0f0 !important; }
 
         .pos-33 { position: absolute; left: 33.33%; transform: translateX(-50%); }
         .pos-66 { position: absolute; left: 66.66%; transform: translateX(-50%); }
 
         @media (min-width: 769px) {
-            .brand-btn { font-weight: 600; font-size: 21px; }
-            #panel-ccrt { font-size: 13px; }
-            #panel-czasowniki { font-size: 24px; max-width: 500px; }
+            .brand-btn { font-size: 21px; }
+            #panel-ccrt, #panel-czasowniki { font-size: 20px; max-width: 550px; }
         }
 
-        .ui-element svg { width: 100%; height: 100%; display: block; }
         #progress-bar { position: absolute; top: 0; left: 0; width: 0%; height: 2px; background-color: #f0f0f0; mix-blend-mode: difference; z-index: 20; }
     </style>
 </head>
@@ -99,7 +95,7 @@
         </button>
 
         <button class="ui-element icon-btn pos-66" id="action-toggle">
-            <span id="ar-label" style="font-weight:800; font-size:20px; letter-spacing:2px; display:none;">AR</span>
+            <span id="ar-label" style="font-weight:800; font-size:18px; letter-spacing:2px; display:none;">AR</span>
             <svg id="fs-icon" viewBox="0 0 24 24" style="display:none;"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
         </button>
 
@@ -112,20 +108,29 @@
         id="clock-model"
         src="ZEGAR.glb" 
         ar ar-modes="webxr scene-viewer quick-look" 
-        ios-src="ZEGAR.glb#allowsContentScaling=0"
         camera-controls disable-pan
         shadow-intensity="1.5" exposure="1.6" environment-intensity="1.8"
         autoplay
         camera-orbit="0deg 55deg 180%"
-        camera-target="0m 0.04m 0m"
-        min-camera-orbit="auto auto 100%"
-        max-camera-orbit="auto auto 600%">
+        camera-target="0m 0.04m 0m">
     </model-viewer>
 
     <script>
         const modelViewer = document.querySelector('#clock-model');
-        let tickAudio = null;
+        const tickAudio = new Audio('tykanie.mp3');
+        tickAudio.loop = true;
         let isPlaying = false;
+        let audioUnlocked = false;
+
+        // Funkcja odblokowująca audio przy dowolnej interakcji (wymóg Chrome)
+        const unlockAudio = () => {
+            if (audioUnlocked) return;
+            tickAudio.play().then(() => {
+                tickAudio.pause();
+                audioUnlocked = true;
+            }).catch(e => console.log("Audio unlock wait..."));
+        };
+        document.body.addEventListener('click', unlockAudio, { once: true });
 
         const applyReset = () => {
             const isMobile = window.innerWidth < 768;
@@ -143,16 +148,10 @@
         document.getElementById('toggle-ccrt').addEventListener('click', () => togglePanel('panel-ccrt', 'panel-czasowniki'));
         document.getElementById('toggle-czasowniki').addEventListener('click', () => togglePanel('panel-czasowniki', 'panel-ccrt'));
 
-        // Naprawa Audio
         document.getElementById('audio-toggle').addEventListener('click', function() {
-            if (!tickAudio) {
-                tickAudio = new Audio('https://actions.google.com/sounds/v1/clocks/mechanical_clock_ticking.ogg');
-                tickAudio.loop = true;
-            }
-            
             isPlaying = !isPlaying;
             if (isPlaying) {
-                tickAudio.play().catch(e => console.log("Audio block:", e));
+                tickAudio.play().catch(e => console.log("Audio error:", e));
                 document.getElementById('speaker-waves').style.display = 'block';
             } else {
                 tickAudio.pause();
@@ -161,10 +160,10 @@
         });
 
         modelViewer.addEventListener('camera-change', () => {
-            if (tickAudio && isPlaying) {
+            if (isPlaying) {
                 const radius = modelViewer.getCameraOrbit().radius;
                 let vol = 1.5 - (radius / 5);
-                tickAudio.volume = Math.max(0.05, Math.min(1, vol));
+                tickAudio.volume = Math.max(0.1, Math.min(1, vol));
             }
         });
 
@@ -179,18 +178,3 @@
                 if (!document.fullscreenElement) document.documentElement.requestFullscreen();
                 else document.exitFullscreen();
             });
-        }
-
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            modelViewer.exposure = document.body.classList.contains('dark-mode') ? "2.8" : "1.6";
-        });
-
-        modelViewer.addEventListener('progress', (e) => {
-            const bar = document.querySelector('#progress-bar');
-            bar.style.width = `${e.detail.totalProgress * 100}%`;
-            if (e.detail.totalProgress === 1) setTimeout(() => bar.style.opacity = '0', 500);
-        });
-    </script>
-</body>
-</html>
